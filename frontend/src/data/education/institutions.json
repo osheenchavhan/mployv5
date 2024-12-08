@@ -1,0 +1,54 @@
+{
+  "institutions": [
+    {
+      "name": "Indian Institute of Technology, Delhi",
+      "city": "New Delhi",
+      "type": "Public"
+    },
+    {
+      "name": "Indian Institute of Technology, Bombay",
+      "city": "Mumbai",
+      "type": "Public"
+    },
+    {
+      "name": "Indian Institute of Technology, Madras",
+      "city": "Chennai",
+      "type": "Public"
+    },
+    {
+      "name": "Delhi University",
+      "city": "New Delhi",
+      "type": "Public"
+    },
+    {
+      "name": "Jawaharlal Nehru University",
+      "city": "New Delhi",
+      "type": "Public"
+    },
+    {
+      "name": "Mumbai University",
+      "city": "Mumbai",
+      "type": "Public"
+    },
+    {
+      "name": "Anna University",
+      "city": "Chennai",
+      "type": "Public"
+    },
+    {
+      "name": "Manipal Institute of Technology",
+      "city": "Manipal",
+      "type": "Private"
+    },
+    {
+      "name": "BITS Pilani",
+      "city": "Pilani",
+      "type": "Private"
+    },
+    {
+      "name": "VIT University",
+      "city": "Vellore",
+      "type": "Private"
+    }
+  ]
+}
