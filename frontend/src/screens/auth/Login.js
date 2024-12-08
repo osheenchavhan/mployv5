@@ -1,171 +1,179 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import Container from '../../components/common/Container';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
+import { theme } from '../../theme/theme';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
-import { theme } from '../../theme/theme';
+import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../../services/firebase/auth';
 
 const Login = () => {
-  const navigation = useNavigation();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  const [errors, setErrors] = useState({});
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
-    }
-    
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const navigation = useNavigation();
 
   const handleLogin = async () => {
-    if (!validateForm()) return;
-
+    if (!email || !password) return;
+    
     setLoading(true);
     try {
-      await loginUser(formData.email, formData.password);
-      // Navigation will be handled by AppNavigator based on auth state
+      await loginUser(email, password);
     } catch (error) {
-      Alert.alert('Login Failed', error.message);
-      setErrors({
-        ...errors,
-        general: error.message
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Container>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Sign in to continue</Text>
-        </View>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.content}>
+            <Text style={styles.title}>Welcome to Mploy</Text>
+            
+            <View style={styles.form}>
+              <Input
+                label="Email"
+                value={email}
+                onChangeText={setEmail}
+                placeholder="Enter your email"
+                keyboardType="email-address"
+                touched={true}
+                required
+                containerStyle={styles.inputContainer}
+              />
 
-        <View style={styles.form}>
-          <Input
-            label="Email"
-            value={formData.email}
-            onChangeText={(text) => setFormData({ ...formData, email: text })}
-            placeholder="Enter your email"
-            keyboardType="email-address"
-            error={errors.email}
-            touched={true}
-            required
-          />
+              <View style={styles.passwordContainer}>
+                <Input
+                  label="Password"
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="Enter your password"
+                  secureTextEntry
+                  touched={true}
+                  required
+                  containerStyle={styles.inputContainer}
+                />
+                <Button
+                  title="Forgot Password?"
+                  variant="text"
+                  onPress={() => navigation.navigate('ForgotPassword')}
+                  style={styles.forgotButton}
+                  textStyle={styles.forgotButtonText}
+                />
+              </View>
 
-          <Input
-            label="Password"
-            value={formData.password}
-            onChangeText={(text) => setFormData({ ...formData, password: text })}
-            placeholder="Enter your password"
-            secureTextEntry
-            error={errors.password}
-            touched={true}
-            required
-          />
+              <Button
+                title="Login"
+                onPress={handleLogin}
+                loading={loading}
+                style={styles.loginButton}
+                textStyle={styles.loginButtonText}
+              />
 
-          {errors.general && (
-            <Text style={styles.errorText}>{errors.general}</Text>
-          )}
-
-          <Button
-            title="Login"
-            onPress={handleLogin}
-            loading={loading}
-            style={styles.loginButton}
-          />
-
-          <Button
-            title="Forgot Password?"
-            variant="outline"
-            onPress={() => {/* TODO: Implement forgot password */}}
-            style={styles.forgotButton}
-          />
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Don't have an account?</Text>
-          <Button
-            title="Register"
-            variant="outline"
-            onPress={() => navigation.navigate('Register')}
-            style={styles.registerButton}
-          />
-        </View>
-      </View>
-    </Container>
+              <View style={styles.footer}>
+                <Text style={styles.footerText}>Don't have an account? </Text>
+                <Button
+                  title="Create Account"
+                  variant="text"
+                  onPress={() => navigation.navigate('Register')}
+                  style={styles.createAccountButton}
+                  textStyle={styles.createAccountButtonText}
+                />
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
+    backgroundColor: theme.colors.neutral.background,
   },
-  header: {
-    alignItems: 'center',
-    marginTop: theme.spacing['2xl'],
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing['5xl'],
+    paddingBottom: theme.spacing.xl,
+    justifyContent: 'center',
   },
   title: {
-    fontFamily: theme.typography.fontFamily.primary,
-    fontSize: theme.typography.fontSize['2xl'],
+    fontSize: theme.typography.fontSize['3xl'],
     fontWeight: theme.typography.fontWeight.bold,
     color: theme.colors.primary.main,
-    marginBottom: theme.spacing.sm,
-  },
-  subtitle: {
-    fontFamily: theme.typography.fontFamily.primary,
-    fontSize: theme.typography.fontSize.md,
-    color: theme.colors.neutral.grey,
+    marginBottom: theme.spacing['3xl'],
+    textAlign: 'center',
   },
   form: {
-    marginVertical: theme.spacing.xl,
+    width: '100%',
+    marginTop: theme.spacing.xl,
   },
-  errorText: {
-    fontFamily: theme.typography.fontFamily.primary,
-    fontSize: theme.typography.fontSize.sm,
-    color: theme.colors.accent.error,
-    textAlign: 'center',
-    marginTop: theme.spacing.sm,
+  inputContainer: {
+    marginBottom: theme.spacing.lg,
   },
-  loginButton: {
-    marginTop: theme.spacing.lg,
+  passwordContainer: {
+    marginBottom: theme.spacing.md,
   },
   forgotButton: {
-    marginTop: theme.spacing.md,
+    alignSelf: 'flex-end',
+    marginTop: theme.spacing.xs,
+    marginBottom: theme.spacing['2xl'],
+  },
+  forgotButtonText: {
+    color: theme.colors.primary.main,
+    fontWeight: theme.typography.fontWeight.medium,
+  },
+  loginButton: {
+    width: '100%',
+    marginBottom: theme.spacing['4xl'],
+  },
+  loginButtonText: {
+    fontSize: theme.typography.fontSize.lg,
+    fontWeight: theme.typography.fontWeight.medium,
   },
   footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: theme.spacing.xl,
+    marginTop: 'auto',
+    paddingBottom: theme.spacing['2xl'],
   },
   footerText: {
-    fontFamily: theme.typography.fontFamily.primary,
     fontSize: theme.typography.fontSize.md,
-    color: theme.colors.neutral.grey,
-    marginBottom: theme.spacing.sm,
+    color: theme.colors.neutral.darkGrey,
   },
-  registerButton: {
-    width: '100%',
+  createAccountButton: {
+    marginLeft: theme.spacing.xs,
+  },
+  createAccountButtonText: {
+    fontSize: theme.typography.fontSize.md,
+    color: theme.colors.primary.main,
+    fontWeight: theme.typography.fontWeight.medium,
   },
 });
 
