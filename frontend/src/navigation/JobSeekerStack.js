@@ -9,34 +9,64 @@ import Location from '../screens/jobseeker/onboarding/Location';
 import Education from '../screens/jobseeker/onboarding/Education';
 import Experience from '../screens/jobseeker/onboarding/Experience';
 import Salary from '../screens/jobseeker/onboarding/Salary';
+import { OnboardingProvider, useOnboarding } from '../context/OnboardingContext';
 
 const Stack = createStackNavigator();
 
+const OnboardingStack = () => {
+  const { currentStep } = useOnboarding();
+  
+  return (
+    <Stack.Navigator 
+      screenOptions={{ headerShown: false }}
+      initialRouteName="BasicInfo"
+    >
+      <Stack.Screen 
+        name="BasicInfo" 
+        component={BasicInfo}
+        options={{ gestureEnabled: false }}
+      />
+      <Stack.Screen 
+        name="Location" 
+        component={Location}
+        options={{ gestureEnabled: currentStep === 'Location' }}
+      />
+      <Stack.Screen 
+        name="Education" 
+        component={Education}
+        options={{ gestureEnabled: currentStep === 'Education' }}
+      />
+      <Stack.Screen 
+        name="Experience" 
+        component={Experience}
+        options={{ gestureEnabled: currentStep === 'Experience' }}
+      />
+      <Stack.Screen 
+        name="Salary" 
+        component={Salary}
+        options={{ gestureEnabled: currentStep === 'Salary' }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const MainStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="SwipeJobs" component={SwipeJobs} />
+    <Stack.Screen name="Matches" component={Matches} />
+    <Stack.Screen name="JobDetail" component={JobDetail} />
+    <Stack.Screen name="Profile" component={Profile} />
+  </Stack.Navigator>
+);
+
 const JobSeekerStack = () => {
-  // TODO: Add onboarding state check
+  // TODO: Replace with actual onboarding check from AsyncStorage/API
   const isOnboardingComplete = false;
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {!isOnboardingComplete ? (
-        // Onboarding Stack
-        <>
-          <Stack.Screen name="BasicInfo" component={BasicInfo} />
-          <Stack.Screen name="Location" component={Location} />
-          <Stack.Screen name="Education" component={Education} />
-          <Stack.Screen name="Experience" component={Experience} />
-          <Stack.Screen name="Salary" component={Salary} />
-        </>
-      ) : (
-        // Main App Stack
-        <>
-          <Stack.Screen name="SwipeJobs" component={SwipeJobs} />
-          <Stack.Screen name="Matches" component={Matches} />
-          <Stack.Screen name="JobDetail" component={JobDetail} />
-          <Stack.Screen name="Profile" component={Profile} />
-        </>
-      )}
-    </Stack.Navigator>
+    <OnboardingProvider>
+      {!isOnboardingComplete ? <OnboardingStack /> : <MainStack />}
+    </OnboardingProvider>
   );
 };
 

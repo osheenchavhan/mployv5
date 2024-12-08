@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, Platform } from 'react-native';
 import { theme } from '../../theme/theme';
 
 const Button = ({
@@ -25,7 +25,7 @@ const Button = ({
       });
     } else if (variant === 'outline') {
       baseStyle.push({
-        backgroundColor: 'transparent',
+        backgroundColor: theme.colors.neutral.transparent,
         borderWidth: 1,
         borderColor: theme.colors.primary.main,
       });
@@ -83,22 +83,32 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.md,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  smButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-  },
-  mdButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-  },
-  lgButton: {
-    paddingVertical: 16,
-    paddingHorizontal: 24,
+    flexDirection: 'row',
   },
   text: {
-    fontFamily: theme.typography.fontFamily.primary,
-    fontWeight: theme.typography.fontWeight.medium,
+    color: theme.colors.neutral.white,
+    fontSize: theme.typography.fontSize.lg,
+    fontWeight: theme.typography.fontWeight.regular,
+    textAlign: 'center',
+    fontFamily: Platform.select({
+      ios: 'System',
+      android: 'Roboto'
+    }),
+  },
+  smButton: {
+    paddingVertical: theme.spacing.xs,
+    paddingHorizontal: theme.spacing.md,
+    height: theme.spacing['3xl'],
+  },
+  mdButton: {
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.lg,
+    height: theme.spacing['3xl'],
+  },
+  lgButton: {
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.xl,
+    height: theme.spacing['4xl'],
   },
   smText: {
     fontSize: theme.typography.fontSize.sm,
@@ -110,7 +120,7 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.fontSize.lg,
   },
   disabled: {
-    opacity: 0.6,
+    opacity: 0.5,
   },
 });
 

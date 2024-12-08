@@ -1,5 +1,7 @@
 // theme.js
 
+import { Platform } from 'react-native';
+
 export const theme = {
   // Color Palette
   colors: {
@@ -30,7 +32,8 @@ export const theme = {
       lightGrey: '#E9ECEF',
       grey: '#6C757D',
       darkGrey: '#343A40',
-      black: '#212529'
+      black: '#212529',
+      transparent: 'transparent'
     },
     // Status Colors
     status: {
@@ -42,24 +45,36 @@ export const theme = {
 
   // Typography
   typography: {
-    fontFamily: {
-      primary: 'Inter, system-ui, sans-serif',
-      secondary: 'Poppins, Arial, sans-serif'
-    },
+    fontFamily: Platform.select({
+      ios: {
+        regular: 'System',
+        medium: 'System',
+        semiBold: 'System',
+        bold: 'System',
+      },
+      android: {
+        regular: 'Roboto',
+        medium: 'Roboto',
+        semiBold: 'Roboto',
+        bold: 'Roboto',
+      }
+    }),
     fontSize: {
-      xs: '12px',
-      sm: '14px',
-      md: '16px',
-      lg: '18px',
-      xl: '20px',
-      '2xl': '24px',
-      '3xl': '30px'
+      xs: 12,
+      sm: 14,
+      md: 16,
+      lg: 18,
+      xl: 20,
+      '2xl': 24,
+      '3xl': 30,
+      '4xl': 36,
+      '5xl': 48
     },
     fontWeight: {
-      regular: 400,
-      medium: 500,
-      semibold: 600,
-      bold: 700
+      regular: '400',
+      medium: '500',
+      semibold: '600',
+      bold: '700'
     },
     lineHeight: {
       tight: 1.25,
@@ -70,32 +85,60 @@ export const theme = {
 
   // Spacing
   spacing: {
-    xs: '4px',
-    sm: '8px',
-    md: '16px',
-    lg: '24px',
-    xl: '32px',
-    '2xl': '48px',
-    '3xl': '64px'
+    xxs: 4,
+    xs: 8,
+    sm: 12,
+    md: 16,
+    lg: 24,
+    xl: 32,
+    '2xl': 40,
+    '3xl': 48,
+    '4xl': 56,
+    '5xl': 64,
+    '6xl': 80
   },
 
   // Border Radius
   borderRadius: {
-    none: '0',
-    sm: '4px',
-    md: '8px',
-    lg: '12px',
-    xl: '16px',
-    full: '9999px'
+    none: 0,
+    sm: 4,
+    md: 8,
+    lg: 12,
+    xl: 16,
+    '2xl': 24,
+    full: 9999
   },
 
   // Shadows
   shadows: {
-    none: 'none',
-    sm: '0 1px 2px rgba(0, 0, 0, 0.05)',
-    md: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    lg: '0 10px 15px rgba(0, 0, 0, 0.1)',
-    xl: '0 20px 25px rgba(0, 0, 0, 0.15)'
+    none: {
+      shadowColor: 'transparent',
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0,
+      shadowRadius: 0,
+      elevation: 0
+    },
+    sm: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.18,
+      shadowRadius: 1.0,
+      elevation: 1
+    },
+    md: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.23,
+      shadowRadius: 2.62,
+      elevation: 4
+    },
+    lg: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.30,
+      shadowRadius: 4.65,
+      elevation: 8
+    }
   },
 
   // Animations
