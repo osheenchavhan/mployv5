@@ -19,6 +19,7 @@ const Input = ({
   keyboardType = 'default',
   autoCapitalize = 'none',
   style,
+  labelStyle,
   required = false,
 }) => {
   const [isSecureTextVisible, setIsSecureTextVisible] = useState(false);
@@ -30,7 +31,7 @@ const Input = ({
   return (
     <View style={[styles.container, style]}>
       {label && (
-        <Text style={styles.label}>
+        <Text style={[styles.label, labelStyle]}>
           {label}
           {required && <Text style={styles.required}> *</Text>}
         </Text>
@@ -67,9 +68,9 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.md,
   },
   label: {
-    fontFamily: theme.typography.fontFamily.primary,
     fontSize: theme.typography.fontSize.sm,
-    color: theme.colors.neutral.darkGrey,
+    fontFamily: theme.typography.fontFamily.medium,
+    color: theme.colors.neutral.black,
     marginBottom: theme.spacing.xs,
   },
   required: {
@@ -82,23 +83,31 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.neutral.lightGrey,
     borderRadius: theme.borderRadius.md,
     backgroundColor: theme.colors.neutral.white,
+    height: theme.spacing['3xl'],
+    shadowColor: theme.colors.neutral.black,
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    paddingHorizontal: theme.spacing.lg,
   },
   input: {
     flex: 1,
-    fontFamily: theme.typography.fontFamily.primary,
     fontSize: theme.typography.fontSize.md,
-    color: theme.colors.neutral.black,
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
+    color: theme.colors.neutral.darkGrey,
+    height: '100%',
   },
   eyeIcon: {
     padding: theme.spacing.sm,
+    marginLeft: theme.spacing.xs,
   },
   errorInput: {
     borderColor: theme.colors.accent.error,
   },
   errorText: {
-    fontFamily: theme.typography.fontFamily.primary,
     fontSize: theme.typography.fontSize.sm,
     color: theme.colors.accent.error,
     marginTop: theme.spacing.xs,
