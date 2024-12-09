@@ -5,6 +5,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import { theme } from '../../theme/theme';
 
@@ -84,14 +85,12 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.md,
     backgroundColor: theme.colors.neutral.white,
     height: theme.spacing['3xl'],
-    shadowColor: theme.colors.neutral.black,
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    ...Platform.select({
+      ios: theme.shadows.sm,
+      android: {
+        elevation: theme.shadows.sm.elevation,
+      },
+    }),
     paddingHorizontal: theme.spacing.lg,
   },
   input: {

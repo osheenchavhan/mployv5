@@ -126,11 +126,12 @@ const Location = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   progress: {
-    marginTop: Platform.OS === 'ios' ? 50 : 20,
+    marginTop: Platform.OS === 'ios' ? theme.spacing.xl : theme.spacing.md,
   },
   container: {
     flex: 1,
-    padding: theme.spacing.lg,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.lg,
   },
   title: {
     fontFamily: theme.typography.fontFamily.regular,
@@ -153,25 +154,20 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: '#fff',
     paddingHorizontal: theme.spacing.lg,
-    paddingLeft: 40,
+    paddingLeft: theme.spacing['2xl'],
     borderRadius: theme.borderRadius.lg,
     fontSize: theme.typography.fontSize.md,
     color: theme.colors.neutral.darkGrey,
     ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
+      ios: theme.shadows.md,
       android: {
-        elevation: 3,
+        elevation: theme.shadows.md.elevation,
       },
     }),
   },
   inputIcon: {
     position: 'absolute',
-    left: 10,
+    left: theme.spacing.md,
     top: 13,
     zIndex: 2,
   },
@@ -194,19 +190,14 @@ const styles = StyleSheet.create({
   },
   policyCard: {
     backgroundColor: '#fff',
-    borderRadius: 16,
+    borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.lg,
     borderWidth: 2,
     borderColor: 'transparent',
     ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
+      ios: theme.shadows.md,
       android: {
-        elevation: 3,
+        elevation: theme.shadows.md.elevation,
       },
     }),
   },

@@ -35,7 +35,7 @@ const Dashboard = ({ navigation }) => {
           </View>
           <TouchableOpacity 
             style={styles.createJobButton}
-            onPress={() => navigation.navigate('CreateJob')}
+            onPress={() => navigation.navigate('PostJob')}
           >
             <MaterialIcons name="add" size={24} color={theme.colors.primary.contrast} />
             <Text style={styles.createJobText}>Post a Job</Text>

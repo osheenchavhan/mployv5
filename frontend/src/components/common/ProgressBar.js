@@ -17,15 +17,16 @@ const ProgressBar = ({ progress, style }) => {
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
     height: 4,
     backgroundColor: theme.colors.neutral.lightGrey,
-    borderRadius: 2,
+    borderRadius: theme.borderRadius.xxs,
     overflow: 'hidden',
   },
   progress: {
     height: '100%',
     backgroundColor: theme.colors.primary.main,
-    borderRadius: 2,
+    borderRadius: theme.borderRadius.xxs,
   },
 });
 

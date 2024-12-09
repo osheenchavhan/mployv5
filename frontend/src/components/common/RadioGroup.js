@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   radioOuter: {
     width: 20,
     height: 20,
-    borderRadius: 10,
+    borderRadius: theme.borderRadius.full,
     borderWidth: 2,
     borderColor: theme.colors.primary.main,
     alignItems: 'center',
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   radioInner: {
     width: 12,
     height: 12,
-    borderRadius: 6,
+    borderRadius: theme.borderRadius.full,
     backgroundColor: theme.colors.primary.main,
   },
   optionLabel: {
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: theme.typography.fontSize.sm,
     fontFamily: theme.typography.fontFamily.regular,
-    color: theme.colors.error,
+    color: theme.colors.accent.error,
     marginTop: theme.spacing.xs,
   },
 });

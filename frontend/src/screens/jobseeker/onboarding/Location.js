@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
   },
   mapContainer: {
     height: 300,
-    borderRadius: 12,
+    borderRadius: theme.borderRadius.lg,
     overflow: 'hidden',
     marginBottom: theme.spacing.xl,
   },
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontFamily: theme.typography.fontFamily.regular,
     fontSize: theme.typography.fontSize.sm,
-    color: theme.colors.error,
+    color: theme.colors.accent.error,
     textAlign: 'center',
     marginBottom: theme.spacing.sm,
   },

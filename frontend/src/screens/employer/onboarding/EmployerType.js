@@ -87,46 +87,39 @@ const EmployerType = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   progress: {
-    marginTop: Platform.OS === 'ios' ? 50 : 20,
+    marginTop: Platform.OS === 'ios' ? theme.spacing.xl : theme.spacing.md,
   },
   container: {
     flex: 1,
     padding: theme.spacing.lg,
   },
   title: {
-    fontFamily: theme.typography.fontFamily.primary,
-    fontSize: 28,
-    fontWeight: '700',
+    fontSize: theme.typography.fontSize['3xl'],
+    fontWeight: theme.typography.fontWeight.bold,
     color: theme.colors.primary.main,
-    marginBottom: theme.spacing.sm,
+    marginBottom: theme.spacing.lg,
     textAlign: 'center',
   },
   subtitle: {
-    fontFamily: theme.typography.fontFamily.primary,
-    fontSize: theme.typography.fontSize.lg,
-    color: theme.colors.neutral.grey,
-    marginBottom: theme.spacing.xl,
+    fontSize: theme.typography.fontSize.xl,
+    color: theme.colors.neutral.darkGrey,
+    marginBottom: theme.spacing.xs,
     textAlign: 'center',
   },
   boxesContainer: {
     flex: 1,
     justifyContent: 'center',
-    gap: 20,
+    gap: theme.spacing.md,
   },
   box: {
     backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 24,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.md,
     minHeight: 180,
     ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
+      ios: theme.shadows.md,
       android: {
-        elevation: 3,
+        elevation: theme.shadows.md.elevation,
       },
     }),
     position: 'relative',
@@ -137,39 +130,36 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.primary.main,
     backgroundColor: `${theme.colors.primary.main}10`,
     ...Platform.select({
-      ios: {
-        shadowOpacity: 0.15,
-        shadowRadius: 12,
-      },
+      ios: theme.shadows.lg,
       android: {
-        elevation: 5,
+        elevation: theme.shadows.lg.elevation,
       },
     }),
   },
   iconContainer: {
-    marginBottom: 16,
+    marginBottom: theme.spacing.sm,
   },
   boxTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 8,
+    fontSize: theme.typography.fontSize.xl,
+    fontWeight: theme.typography.fontWeight.bold,
+    marginBottom: theme.spacing.sm,
     color: theme.colors.neutral.dark,
   },
   selectedText: {
     color: theme.colors.primary.main,
   },
   boxDescription: {
-    fontSize: 16,
+    fontSize: theme.typography.fontSize.md,
     color: theme.colors.neutral.grey,
-    lineHeight: 22,
+    lineHeight: theme.typography.lineHeight.md,
   },
   selectedDescription: {
     color: theme.colors.primary.dark,
   },
   selectedIndicator: {
     position: 'absolute',
-    top: 16,
-    right: 16,
+    top: theme.spacing.sm,
+    right: theme.spacing.sm,
   },
   button: {
     marginTop: theme.spacing.xl,

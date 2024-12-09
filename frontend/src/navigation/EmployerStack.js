@@ -11,46 +11,51 @@ import Location from '../screens/employer/onboarding/Location';
 import Verification from '../screens/employer/onboarding/Verification';
 import Dashboard from '../screens/employer/Dashboard';
 import Login from '../screens/auth/Login';
+import PostJob from '../screens/employer/jobs/PostJob';
+import { JobPostingProvider } from '../context/JobPostingContext';
 
 const Stack = createStackNavigator();
 
 const EmployerStack = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {/* Auth Screens */}
-      <Stack.Screen 
-        name="Login" 
-        component={Login}
-        options={{ gestureEnabled: false }}
-      />
+    <JobPostingProvider>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {/* Auth Screens */}
+        <Stack.Screen 
+          name="Login" 
+          component={Login}
+          options={{ gestureEnabled: false }}
+        />
 
-      {/* Onboarding Screens */}
-      <Stack.Screen 
-        name="EmployerType" 
-        component={EmployerType}
-        options={{ gestureEnabled: false }}
-      />
-      <Stack.Screen 
-        name="CompanyInfo" 
-        component={CompanyInfo}
-      />
-      <Stack.Screen 
-        name="Location" 
-        component={Location}
-      />
-      <Stack.Screen 
-        name="Verification" 
-        component={Verification}
-      />
+        {/* Onboarding Screens */}
+        <Stack.Screen 
+          name="EmployerType" 
+          component={EmployerType}
+          options={{ gestureEnabled: false }}
+        />
+        <Stack.Screen 
+          name="CompanyInfo" 
+          component={CompanyInfo}
+        />
+        <Stack.Screen 
+          name="Location" 
+          component={Location}
+        />
+        <Stack.Screen 
+          name="Verification" 
+          component={Verification}
+        />
 
-      {/* Main App Screens */}
-      <Stack.Screen name="Dashboard" component={Dashboard} />
-      <Stack.Screen name="SwipeCandidates" component={SwipeCandidates} />
-      <Stack.Screen name="Matches" component={Matches} />
-      <Stack.Screen name="JobPosts" component={JobPosts} />
-      <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="Settings" component={Settings} />
-    </Stack.Navigator>
+        {/* Main App Screens */}
+        <Stack.Screen name="Dashboard" component={Dashboard} />
+        <Stack.Screen name="SwipeCandidates" component={SwipeCandidates} />
+        <Stack.Screen name="Matches" component={Matches} />
+        <Stack.Screen name="JobPosts" component={JobPosts} />
+        <Stack.Screen name="PostJob" component={PostJob} />
+        <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="Settings" component={Settings} />
+      </Stack.Navigator>
+    </JobPostingProvider>
   );
 };
 

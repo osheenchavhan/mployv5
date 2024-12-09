@@ -117,10 +117,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderWidth: 1,
     borderColor: theme.colors.neutral.grey,
-    borderRadius: 8,
+    borderRadius: theme.borderRadius.md,
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.sm,
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.neutral.background,
   },
   selectButtonText: {
     fontSize: theme.typography.fontSize.md,
@@ -131,12 +131,12 @@ const styles = StyleSheet.create({
     color: theme.colors.neutral.grey,
   },
   errorBorder: {
-    borderColor: theme.colors.error,
+    borderColor: theme.colors.accent.error,
   },
   errorText: {
     fontSize: theme.typography.fontSize.sm,
     fontFamily: theme.typography.fontFamily.regular,
-    color: theme.colors.error,
+    color: theme.colors.accent.error,
     marginTop: theme.spacing.xs,
   },
   modalContainer: {
@@ -145,10 +145,10 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.neutral.background,
     marginTop: 'auto',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: theme.borderRadius['2xl'],
+    borderTopRightRadius: theme.borderRadius['2xl'],
     maxHeight: '80%',
   },
   modalHeader: {

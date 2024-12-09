@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { useUser } from '../contexts/UserContext';
+import { useUser } from '../context/UserContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import JobSeekerStack from './JobSeekerStack';
 import EmployerStack from './EmployerStack';

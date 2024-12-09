@@ -13,7 +13,12 @@ const OnboardingHeader = ({ title, showBack = true }) => {
         <TouchableOpacity 
           onPress={() => navigation.goBack()} 
           style={styles.backButton}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          hitSlop={{ 
+            top: theme.spacing.sm, 
+            bottom: theme.spacing.sm, 
+            left: theme.spacing.sm, 
+            right: theme.spacing.sm 
+          }}
         >
           <Icon name="arrow-back" size={24} color={theme.colors.neutral.black} />
         </TouchableOpacity>

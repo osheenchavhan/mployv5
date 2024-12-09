@@ -30,7 +30,12 @@ const Chip = ({
       {variant === 'removable' && selected && (
         <TouchableOpacity 
           onPress={onRemove}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          hitSlop={{ 
+            top: theme.spacing.xs, 
+            bottom: theme.spacing.xs, 
+            left: theme.spacing.xs, 
+            right: theme.spacing.xs 
+          }}
         >
           <Icon 
             name="close" 
@@ -75,9 +80,9 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 4,
+    paddingVertical: theme.spacing.xxs,
     paddingHorizontal: theme.spacing.xs,
-    borderRadius: 12,
+    borderRadius: theme.borderRadius.lg,
     marginRight: theme.spacing.xs,
     marginBottom: theme.spacing.xs,
     borderWidth: 1,
@@ -86,10 +91,10 @@ const styles = StyleSheet.create({
   label: {
     fontSize: theme.typography.fontSize.sm,
     fontFamily: theme.typography.fontFamily.regular,
-    lineHeight: 18,
+    lineHeight: theme.typography.fontSize.sm * theme.typography.lineHeight.normal,
   },
   icon: {
-    marginLeft: 4,
+    marginLeft: theme.spacing.xxs,
   },
 });
 

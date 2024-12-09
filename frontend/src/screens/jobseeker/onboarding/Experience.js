@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: theme.typography.fontSize.sm,
-    color: theme.colors.neutral.gray,
+    color: theme.colors.neutral.grey,
     marginBottom: theme.spacing.sm,
   },
   toggleContainer: {
@@ -389,21 +389,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   datePicker: {
-    borderColor: theme.colors.neutral.lightGray,
+    borderColor: theme.colors.neutral.lightGrey,
     borderRadius: theme.borderRadius.md,
   },
   datePickerDropdown: {
-    borderColor: theme.colors.neutral.lightGray,
+    borderColor: theme.colors.neutral.lightGrey,
   },
   dropdown: {
-    borderColor: theme.colors.neutral.lightGray,
+    borderColor: theme.colors.neutral.lightGrey,
     borderRadius: theme.borderRadius.md,
   },
   dropdownList: {
-    borderColor: theme.colors.neutral.lightGray,
+    borderColor: theme.colors.neutral.lightGrey,
   },
   errorText: {
-    color: theme.colors.error,
+    color: theme.colors.accent.error,
     fontSize: theme.typography.fontSize.sm,
     marginTop: -theme.spacing.md,
     marginBottom: theme.spacing.md,
