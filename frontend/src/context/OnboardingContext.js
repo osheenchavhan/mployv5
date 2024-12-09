@@ -3,23 +3,23 @@ import React, { createContext, useContext, useState } from 'react';
 const OnboardingContext = createContext();
 
 export const OnboardingProvider = ({ children }) => {
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     // Basic Info
     firstName: '',
     lastName: '',
-    dateOfBirth: null,
+    dateOfBirth: '',
     gender: '',
-    phone: '',
-    
+    phoneNumber: '',
     // Location
-    location: '',
-    preferredLocation: '',
-    
+    location: null, // Will store {latitude, longitude}
+    searchRadius: 10, // Default 10km radius
     // Other sections to be added later
     education: null,
     experience: null,
     salary: null,
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
 
   const [currentStep, setCurrentStep] = useState('BasicInfo');
   const steps = ['BasicInfo', 'Location', 'Education', 'Experience', 'Salary'];

@@ -13,6 +13,7 @@ import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../../services/firebase/auth';
+import { Alert } from 'react-native';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -21,13 +22,33 @@ const Login = () => {
   const navigation = useNavigation();
 
   const handleLogin = async () => {
-    if (!email || !password) return;
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password');
+      return;
+    }
     
+    console.log('Attempting login...');
     setLoading(true);
     try {
-      await loginUser(email, password);
+      console.log('Calling loginUser with:', email);
+      const user = await loginUser(email, password);
+      console.log('Login successful:', user);
+      
+      // Navigate to EmployerStack first, which will then show EmployerType
+      navigation.reset({
+        index: 0,
+        routes: [{ 
+          name: 'EmployerStack',
+          state: {
+            routes: [
+              { name: 'EmployerType' }
+            ]
+          }
+        }],
+      });
     } catch (error) {
-      console.error(error);
+      console.error('Login error:', error);
+      Alert.alert('Login Failed', error.message || 'Please check your email and password');
     } finally {
       setLoading(false);
     }
@@ -69,6 +90,7 @@ const Login = () => {
                   required
                   containerStyle={styles.inputContainer}
                 />
+                {/* Temporarily remove forgot password until implemented
                 <Button
                   title="Forgot Password?"
                   variant="text"
@@ -76,6 +98,7 @@ const Login = () => {
                   style={styles.forgotButton}
                   textStyle={styles.forgotButtonText}
                 />
+                */}
               </View>
 
               <Button

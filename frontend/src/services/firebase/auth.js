@@ -28,10 +28,30 @@ export const registerUser = async (email, password, userData) => {
 
 export const loginUser = async (email, password) => {
   try {
+    console.log('Attempting to sign in with email:', email);
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    console.log('Sign in successful:', userCredential.user.uid);
     return userCredential.user;
   } catch (error) {
-    throw new Error(getErrorMessage(error));
+    console.error('Login error:', error.code, error.message);
+    let errorMessage;
+    switch (error.code) {
+      case 'auth/invalid-email':
+        errorMessage = 'Invalid email address format.';
+        break;
+      case 'auth/user-disabled':
+        errorMessage = 'This account has been disabled.';
+        break;
+      case 'auth/user-not-found':
+        errorMessage = 'No account found with this email.';
+        break;
+      case 'auth/wrong-password':
+        errorMessage = 'Incorrect password.';
+        break;
+      default:
+        errorMessage = 'Failed to login. Please try again.';
+    }
+    throw new Error(errorMessage);
   }
 };
 

@@ -16,6 +16,16 @@
       "type": "Public"
     },
     {
+      "name": "Indian Institute of Technology, Kanpur",
+      "city": "Kanpur",
+      "type": "Public"
+    },
+    {
+      "name": "Indian Institute of Technology, Kharagpur",
+      "city": "Kharagpur",
+      "type": "Public"
+    },
+    {
       "name": "Delhi University",
       "city": "New Delhi",
       "type": "Public"
@@ -26,7 +36,12 @@
       "type": "Public"
     },
     {
-      "name": "Mumbai University",
+      "name": "Banaras Hindu University",
+      "city": "Varanasi",
+      "type": "Public"
+    },
+    {
+      "name": "University of Mumbai",
       "city": "Mumbai",
       "type": "Public"
     },
@@ -36,19 +51,554 @@
       "type": "Public"
     },
     {
-      "name": "Manipal Institute of Technology",
-      "city": "Manipal",
-      "type": "Private"
+      "name": "Jadavpur University",
+      "city": "Kolkata",
+      "type": "Public"
     },
     {
-      "name": "BITS Pilani",
+      "name": "Aligarh Muslim University",
+      "city": "Aligarh",
+      "type": "Public"
+    },
+    {
+      "name": "National Institute of Technology, Tiruchirappalli",
+      "city": "Tiruchirappalli",
+      "type": "Public"
+    },
+    {
+      "name": "National Institute of Technology, Surathkal",
+      "city": "Mangalore",
+      "type": "Public"
+    },
+    {
+      "name": "Birla Institute of Technology and Science, Pilani",
       "city": "Pilani",
       "type": "Private"
     },
     {
-      "name": "VIT University",
+      "name": "Manipal Academy of Higher Education",
+      "city": "Manipal",
+      "type": "Private"
+    },
+    {
+      "name": "Vellore Institute of Technology",
       "city": "Vellore",
       "type": "Private"
+    },
+    {
+      "name": "SRM Institute of Science and Technology",
+      "city": "Chennai",
+      "type": "Private"
+    },
+    {
+      "name": "Amrita Vishwa Vidyapeetham",
+      "city": "Coimbatore",
+      "type": "Private"
+    },
+    {
+      "name": "Thapar Institute of Engineering and Technology",
+      "city": "Patiala",
+      "type": "Private"
+    },
+    {
+      "name": "Indian Institute of Science",
+      "city": "Bangalore",
+      "type": "Public"
+    },
+    {
+      "name": "National Institute of Technology, Warangal",
+      "city": "Warangal",
+      "type": "Public"
+    },
+    {
+      "name": "National Institute of Technology, Rourkela",
+      "city": "Rourkela",
+      "type": "Public"
+    },
+    {
+      "name": "National Institute of Technology, Calicut",
+      "city": "Kozhikode",
+      "type": "Public"
+    },
+    {
+      "name": "Indian Statistical Institute",
+      "city": "Kolkata",
+      "type": "Public"
+    },
+    {
+      "name": "Jamia Millia Islamia",
+      "city": "New Delhi",
+      "type": "Public"
+    },
+    {
+      "name": "Punjab Engineering College",
+      "city": "Chandigarh",
+      "type": "Public"
+    },
+    {
+      "name": "Indian Institute of Information Technology, Allahabad",
+      "city": "Allahabad",
+      "type": "Public"
+    },
+    {
+      "name": "Indian Institute of Information Technology, Design and Manufacturing",
+      "city": "Jabalpur",
+      "type": "Public"
+    },
+    {
+      "name": "National Institute of Design",
+      "city": "Ahmedabad",
+      "type": "Public"
+    },
+    {
+      "name": "College of Engineering, Pune",
+      "city": "Pune",
+      "type": "Public"
+    },
+    {
+      "name": "PSG College of Technology",
+      "city": "Coimbatore",
+      "type": "Private"
+    },
+    {
+      "name": "RV College of Engineering",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "MS Ramaiah Institute of Technology",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "Symbiosis Institute of Technology",
+      "city": "Pune",
+      "type": "Private"
+    },
+    {
+      "name": "Chandigarh University",
+      "city": "Chandigarh",
+      "type": "Private"
+    },
+    {
+      "name": "Lovely Professional University",
+      "city": "Phagwara",
+      "type": "Private"
+    },
+    {
+      "name": "Shiv Nadar University",
+      "city": "Greater Noida",
+      "type": "Private"
+    },
+    {
+      "name": "Kalinga Institute of Industrial Technology",
+      "city": "Bhubaneswar",
+      "type": "Private"
+    },
+    {
+      "name": "Graphic Era University",
+      "city": "Dehradun",
+      "type": "Private"
+    },
+    {
+      "name": "Christ University",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "Presidency University",
+      "city": "Kolkata",
+      "type": "Public"
+    },
+    {
+      "name": "Indian Institute of Technology, Guwahati",
+      "city": "Guwahati",
+      "type": "Public"
+    },
+    {
+      "name": "Indian Institute of Technology, Roorkee",
+      "city": "Roorkee",
+      "type": "Public"
+    },
+    {
+      "name": "Indian Institute of Technology, Hyderabad",
+      "city": "Hyderabad",
+      "type": "Public"
+    },
+    {
+      "name": "National Institute of Technology, Durgapur",
+      "city": "Durgapur",
+      "type": "Public"
+    },
+    {
+      "name": "National Institute of Technology, Silchar",
+      "city": "Silchar",
+      "type": "Public"
+    },
+    {
+      "name": "National Institute of Technology, Kurukshetra",
+      "city": "Kurukshetra",
+      "type": "Public"
+    },
+    {
+      "name": "SASTRA Deemed University",
+      "city": "Thanjavur",
+      "type": "Private"
+    },
+    {
+      "name": "Karunya Institute of Technology and Sciences",
+      "city": "Coimbatore",
+      "type": "Private"
+    },
+    {
+      "name": "BMS College of Engineering",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "Sathyabama Institute of Science and Technology",
+      "city": "Chennai",
+      "type": "Private"
+    },
+    {
+      "name": "PES University",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "Hindustan Institute of Technology and Science",
+      "city": "Chennai",
+      "type": "Private"
+    },
+    {
+      "name": "KJ Somaiya College of Engineering",
+      "city": "Mumbai",
+      "type": "Private"
+    },
+    {
+      "name": "Nirma University",
+      "city": "Ahmedabad",
+      "type": "Private"
+    },
+    {
+      "name": "Jaypee Institute of Information Technology",
+      "city": "Noida",
+      "type": "Private"
+    },
+    {
+      "name": "Motilal Nehru National Institute of Technology",
+      "city": "Allahabad",
+      "type": "Public"
+    },
+    {
+      "name": "Malaviya National Institute of Technology",
+      "city": "Jaipur",
+      "type": "Public"
+    },
+    {
+      "name": "Dr. B.R. Ambedkar National Institute of Technology",
+      "city": "Jalandhar",
+      "type": "Public"
+    },
+    {
+      "name": "Osmania University",
+      "city": "Hyderabad",
+      "type": "Public"
+    },
+    {
+      "name": "Andhra University",
+      "city": "Visakhapatnam",
+      "type": "Public"
+    },
+    {
+      "name": "University of Kerala",
+      "city": "Thiruvananthapuram",
+      "type": "Public"
+    },
+    {
+      "name": "Cochin University of Science and Technology",
+      "city": "Kochi",
+      "type": "Public"
+    },
+    {
+      "name": "Bangalore University",
+      "city": "Bangalore",
+      "type": "Public"
+    },
+    {
+      "name": "University of Mysore",
+      "city": "Mysore",
+      "type": "Public"
+    },
+    {
+      "name": "Gujarat University",
+      "city": "Ahmedabad",
+      "type": "Public"
+    },
+    {
+      "name": "Maharaja Sayajirao University of Baroda",
+      "city": "Vadodara",
+      "type": "Public"
+    },
+    {
+      "name": "Savitribai Phule Pune University",
+      "city": "Pune",
+      "type": "Public"
+    },
+    {
+      "name": "SVKM's NMIMS University",
+      "city": "Mumbai",
+      "type": "Private"
+    },
+    {
+      "name": "MIT World Peace University",
+      "city": "Pune",
+      "type": "Private"
+    },
+    {
+      "name": "Sharda University",
+      "city": "Greater Noida",
+      "type": "Private"
+    },
+    {
+      "name": "Bennett University",
+      "city": "Greater Noida",
+      "type": "Private"
+    },
+    {
+      "name": "Amity University",
+      "city": "Noida",
+      "type": "Private"
+    },
+    {
+      "name": "SRM University AP",
+      "city": "Amaravati",
+      "type": "Private"
+    },
+    {
+      "name": "Gitam University",
+      "city": "Visakhapatnam",
+      "type": "Private"
+    },
+    {
+      "name": "KL University",
+      "city": "Guntur",
+      "type": "Private"
+    },
+    {
+      "name": "CMR University",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "Alliance University",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "Dayananda Sagar University",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "Jain University",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "Garden City University",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "REVA University",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "Presidency University",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "CMR Institute of Technology",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "New Horizon College of Engineering",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "East Point College of Engineering and Technology",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "MVJ College of Engineering",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "Cambridge Institute of Technology",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "Global Academy of Technology",
+      "city": "Bangalore",
+      "type": "Private"
+    },
+    {
+      "name": "Panjab University",
+      "city": "Chandigarh",
+      "type": "Public"
+    },
+    {
+      "name": "Guru Nanak Dev University",
+      "city": "Amritsar",
+      "type": "Public"
+    },
+    {
+      "name": "Thapar Institute of Engineering and Technology",
+      "city": "Patiala",
+      "type": "Private"
+    },
+    {
+      "name": "Chitkara University",
+      "city": "Rajpura",
+      "type": "Private"
+    },
+    {
+      "name": "IK Gujral Punjab Technical University",
+      "city": "Kapurthala",
+      "type": "Public"
+    },
+    {
+      "name": "Guru Gobind Singh Indraprastha University",
+      "city": "New Delhi",
+      "type": "Public"
+    },
+    {
+      "name": "Netaji Subhas University of Technology",
+      "city": "New Delhi",
+      "type": "Public"
+    },
+    {
+      "name": "Delhi Technological University",
+      "city": "Delhi",
+      "type": "Public"
+    },
+    {
+      "name": "Indira Gandhi Delhi Technical University for Women",
+      "city": "Delhi",
+      "type": "Public"
+    },
+    {
+      "name": "National Institute of Technology Delhi",
+      "city": "Delhi",
+      "type": "Public"
+    },
+    {
+      "name": "Maharshi Dayanand University",
+      "city": "Rohtak",
+      "type": "Public"
+    },
+    {
+      "name": "Kurukshetra University",
+      "city": "Kurukshetra",
+      "type": "Public"
+    },
+    {
+      "name": "Guru Jambheshwar University of Science and Technology",
+      "city": "Hisar",
+      "type": "Public"
+    },
+    {
+      "name": "Chaudhary Charan Singh Haryana Agricultural University",
+      "city": "Hisar",
+      "type": "Public"
+    },
+    {
+      "name": "Rajasthan Technical University",
+      "city": "Kota",
+      "type": "Public"
+    },
+    {
+      "name": "Banasthali Vidyapith",
+      "city": "Banasthali",
+      "type": "Private"
+    },
+    {
+      "name": "Manipal University Jaipur",
+      "city": "Jaipur",
+      "type": "Private"
+    },
+    {
+      "name": "LNM Institute of Information Technology",
+      "city": "Jaipur",
+      "type": "Private"
+    },
+    {
+      "name": "Poornima University",
+      "city": "Jaipur",
+      "type": "Private"
+    },
+    {
+      "name": "University of Rajasthan",
+      "city": "Jaipur",
+      "type": "Public"
+    },
+    {
+      "name": "Uttarakhand Technical University",
+      "city": "Dehradun",
+      "type": "Public"
+    },
+    {
+      "name": "DIT University",
+      "city": "Dehradun",
+      "type": "Private"
+    },
+    {
+      "name": "University of Petroleum and Energy Studies",
+      "city": "Dehradun",
+      "type": "Private"
+    },
+    {
+      "name": "Himachal Pradesh University",
+      "city": "Shimla",
+      "type": "Public"
+    },
+    {
+      "name": "Jaypee University of Information Technology",
+      "city": "Solan",
+      "type": "Private"
+    },
+    {
+      "name": "Shoolini University",
+      "city": "Solan",
+      "type": "Private"
+    },
+    {
+      "name": "Chitkara University Himachal Pradesh",
+      "city": "Kalujhanda",
+      "type": "Private"
+    },
+    {
+      "name": "APJ Abdul Kalam Technical University",
+      "city": "Lucknow",
+      "type": "Public"
+    },
+    {
+      "name": "Integral University",
+      "city": "Lucknow",
+      "type": "Private"
+    },
+    {
+      "name": "Babasaheb Bhimrao Ambedkar University",
+      "city": "Lucknow",
+      "type": "Public"
     }
   ]
 }

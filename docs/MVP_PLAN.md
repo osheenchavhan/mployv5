@@ -11,62 +11,61 @@ A geospatial-based job matching platform connecting job seekers with both direct
 - Distance display on cards
 - Hyper-local job access
 
-### 2. Dual Employer System
-- Direct Employers (Companies)
-- Recruitment Agencies
+### 2. Dual Employer System 
+- Direct Employers (Companies) 
+- Recruitment Agencies 
 - Clear visual distinction on job cards
 
 ### 3. Progressive Profile Creation
-- Step-by-step onboarding
-- Location permission handling
-- Essential information capture
+- Step-by-step onboarding 
+- Location permission handling 
+- Essential information capture 
 
 ## Implementation Phases
 
-### Phase 1: Foundation (Week 1-2)
-1. **Project Setup**
-   - Initialize React Native Expo project
-   - Set up Node.js backend
-   - Firebase configuration
-   - Theme implementation
+### Phase 1: Foundation 
+1. **Project Setup** 
+   - Initialize React Native Expo project 
+   - Firebase configuration 
+   - Theme implementation 
 
-2. **Authentication**
-   - Login/Register flows
-   - User type selection
-   - Firebase Auth integration
+2. **Authentication** 
+   - Login/Register flows 
+   - User type selection 
+   - Firebase Auth integration 
 
-3. **Basic UI Components**
-   - Theme system
-   - Common components
+3. **Basic UI Components** 
+   - Theme system 
+   - Common components 
    - Job/Profile cards
 
-### Phase 2: Core Features (Week 3-4)
-1. **Progressive Onboarding**
-   - JobSeeker flow
+### Phase 2: Core Features (In Progress)
+1. **Progressive Onboarding** 
+   - JobSeeker flow (Pending)
      - Basic Info
      - Location
      - Education
      - Experience
      - Salary
    
-   - Employer flow
-     - Company Info
-     - Employer Type
-     - Location
-     - Verification
+   - Employer flow 
+     - Company Info 
+     - Employer Type 
+     - Location 
+     - Verification 
 
-2. **Geospatial Implementation**
-   - Location services
+2. **Geospatial Implementation** (In Progress)
+   - Location services 
    - Radius calculation
    - Distance display
    - Location-based matching
 
-3. **Job/Profile Management**
+3. **Job/Profile Management** (Next Priority)
    - Job posting (Employers)
    - Profile creation (JobSeekers)
    - Basic search/filter
 
-### Phase 3: Matching System (Week 5-6)
+### Phase 3: Matching System
 1. **Swipe Mechanism**
    - Swipe cards implementation
    - Match algorithm
@@ -81,7 +80,7 @@ A geospatial-based job matching platform connecting job seekers with both direct
    - Match chat
    - Basic messaging
 
-## Testing & Launch (Week 7-8)
+## Testing & Launch
 1. **Testing**
    - User flow testing
    - Geolocation testing

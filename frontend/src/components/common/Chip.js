@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Chip = ({ 
   label, 
-  variant = 'display', // 'interactive', 'display', 'status'
+  variant = 'display', // 'choice', 'removable', 'display', 'status'
   color,
   selected = false,
   onPress,
@@ -14,28 +14,28 @@ const Chip = ({
 }) => {
   const getBackgroundColor = () => {
     if (variant === 'status') return color || theme.colors.primary.light;
-    if (variant === 'interactive' && selected) return theme.colors.primary.light;
+    if ((variant === 'choice' || variant === 'removable') && selected) return theme.colors.primary.main;
     return theme.colors.neutral.lightGrey;
   };
 
   const getTextColor = () => {
     if (variant === 'status') return theme.colors.neutral.black;
-    if (variant === 'interactive' && selected) return theme.colors.primary.main;
+    if ((variant === 'choice' || variant === 'removable') && selected) return theme.colors.neutral.white;
     return theme.colors.neutral.darkGrey;
   };
 
   const content = (
     <>
       <Text style={[styles.label, { color: getTextColor() }]}>{label}</Text>
-      {variant === 'interactive' && selected && (
+      {variant === 'removable' && selected && (
         <TouchableOpacity 
           onPress={onRemove}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <Icon 
             name="close" 
-            size={16} 
-            color={theme.colors.primary.main} 
+            size={14} 
+            color={theme.colors.neutral.white}
             style={styles.icon}
           />
         </TouchableOpacity>
@@ -43,7 +43,7 @@ const Chip = ({
     </>
   );
 
-  if (variant === 'interactive') {
+  if (variant === 'choice' || variant === 'removable') {
     return (
       <TouchableOpacity 
         style={[
@@ -75,18 +75,21 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: theme.spacing.xs,
-    paddingHorizontal: theme.spacing.sm,
-    borderRadius: 16,
+    paddingVertical: 4,
+    paddingHorizontal: theme.spacing.xs,
+    borderRadius: 12,
     marginRight: theme.spacing.xs,
     marginBottom: theme.spacing.xs,
+    borderWidth: 1,
+    borderColor: theme.colors.primary.main,
   },
   label: {
     fontSize: theme.typography.fontSize.sm,
     fontFamily: theme.typography.fontFamily.regular,
+    lineHeight: 18,
   },
   icon: {
-    marginLeft: theme.spacing.xs,
+    marginLeft: 4,
   },
 });
 

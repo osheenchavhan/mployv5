@@ -1,101 +1,103 @@
 {
-  "Graduate": {
-    "degrees": [
-      {
-        "name": "Bachelor of Technology (B.Tech)",
-        "specializations": [
-          "Computer Science",
-          "Information Technology",
-          "Electronics & Communication",
-          "Mechanical Engineering",
-          "Civil Engineering",
-          "Electrical Engineering"
-        ]
-      },
-      {
-        "name": "Bachelor of Science (B.Sc)",
-        "specializations": [
-          "Computer Science",
-          "Mathematics",
-          "Physics",
-          "Chemistry",
-          "Biology"
-        ]
-      },
-      {
-        "name": "Bachelor of Commerce (B.Com)",
-        "specializations": [
-          "Accounting & Finance",
-          "Banking & Insurance",
-          "Business Administration"
-        ]
-      },
-      {
-        "name": "Bachelor of Arts (BA)",
-        "specializations": [
-          "Economics",
-          "English",
-          "Psychology",
-          "Sociology",
-          "Political Science"
-        ]
-      }
-    ]
-  },
-  "Post Graduate": {
-    "degrees": [
-      {
-        "name": "Master of Technology (M.Tech)",
-        "specializations": [
-          "Computer Science",
-          "Information Technology",
-          "Electronics & Communication",
-          "Mechanical Engineering",
-          "Civil Engineering"
-        ]
-      },
-      {
-        "name": "Master of Science (M.Sc)",
-        "specializations": [
-          "Computer Science",
-          "Mathematics",
-          "Physics",
-          "Chemistry",
-          "Biology"
-        ]
-      },
-      {
-        "name": "Master of Business Administration (MBA)",
-        "specializations": [
-          "Finance",
-          "Marketing",
-          "Human Resources",
-          "Operations",
-          "International Business"
-        ]
-      }
-    ]
-  },
-  "Diploma": {
-    "degrees": [
-      {
-        "name": "Diploma in Engineering",
-        "specializations": [
-          "Computer Science",
-          "Mechanical",
-          "Civil",
-          "Electrical",
-          "Electronics"
-        ]
-      },
-      {
-        "name": "Diploma in Business",
-        "specializations": [
-          "Business Administration",
-          "Marketing",
-          "Finance"
-        ]
-      }
-    ]
-  }
+  "degrees": [
+    {
+      "name": "Bachelor of Technology (B.Tech)",
+      "specializations": [
+        "Computer Science",
+        "Information Technology",
+        "Electronics & Communication",
+        "Mechanical Engineering",
+        "Civil Engineering",
+        "Electrical Engineering",
+        "Chemical Engineering",
+        "Aerospace Engineering"
+      ]
+    },
+    {
+      "name": "Bachelor of Science (B.Sc)",
+      "specializations": [
+        "Computer Science",
+        "Mathematics",
+        "Physics",
+        "Chemistry",
+        "Biology",
+        "Statistics",
+        "Environmental Science"
+      ]
+    },
+    {
+      "name": "Bachelor of Commerce (B.Com)",
+      "specializations": [
+        "Accounting & Finance",
+        "Banking & Insurance",
+        "Business Administration",
+        "Economics",
+        "Taxation"
+      ]
+    },
+    {
+      "name": "Bachelor of Arts (BA)",
+      "specializations": [
+        "English",
+        "Economics",
+        "Psychology",
+        "Sociology",
+        "Political Science",
+        "History"
+      ]
+    },
+    {
+      "name": "Master of Technology (M.Tech)",
+      "specializations": [
+        "Computer Science",
+        "Information Technology",
+        "Electronics & Communication",
+        "Mechanical Engineering",
+        "Civil Engineering",
+        "Electrical Engineering"
+      ]
+    },
+    {
+      "name": "Master of Business Administration (MBA)",
+      "specializations": [
+        "Finance",
+        "Marketing",
+        "Human Resources",
+        "Operations",
+        "International Business",
+        "Business Analytics"
+      ]
+    },
+    {
+      "name": "Master of Science (M.Sc)",
+      "specializations": [
+        "Computer Science",
+        "Mathematics",
+        "Physics",
+        "Chemistry",
+        "Biology",
+        "Data Science"
+      ]
+    },
+    {
+      "name": "Master of Commerce (M.Com)",
+      "specializations": [
+        "Accounting & Finance",
+        "Banking & Insurance",
+        "Business Administration",
+        "Financial Analysis"
+      ]
+    },
+    {
+      "name": "Diploma",
+      "specializations": [
+        "Computer Science",
+        "Electronics",
+        "Mechanical",
+        "Civil",
+        "Electrical",
+        "IT"
+      ]
+    }
+  ]
 }

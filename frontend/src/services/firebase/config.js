@@ -21,9 +21,34 @@ const firebaseConfig = {
   appId: FIREBASE_APP_ID
 };
 
+// Validate Firebase config
+const validateConfig = () => {
+  const requiredFields = [
+    'apiKey',
+    'authDomain',
+    'projectId',
+    'storageBucket',
+    'messagingSenderId',
+    'appId'
+  ];
+  
+  const missingFields = requiredFields.filter(field => !firebaseConfig[field]);
+  
+  if (missingFields.length > 0) {
+    throw new Error(`Missing Firebase configuration: ${missingFields.join(', ')}. Please check your .env file.`);
+  }
+};
+
 // Initialize Firebase
+validateConfig();
+console.log('Initializing Firebase with config:', {
+  ...firebaseConfig,
+  apiKey: firebaseConfig.apiKey.substring(0, 5) + '...'  // Only log part of the API key for security
+});
+
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+console.log('Firebase initialized successfully');
 
 export default app;

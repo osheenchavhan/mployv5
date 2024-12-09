@@ -89,11 +89,25 @@ const EducationScreen = ({ navigation }) => {
   };
 
   const handleEducationChange = (index, field, value) => {
+    console.log('Updating education:', { index, field, value });
     const newList = [...educationList];
-    newList[index] = {
-      ...newList[index],
-      [field]: value
-    };
+    if (field === 'degree' || field === 'specialization') {
+      newList[index] = {
+        ...newList[index],
+        [field]: value
+      };
+    } else if (field === 'completionDate') {
+      newList[index] = {
+        ...newList[index],
+        completionDate: value
+      };
+    } else {
+      newList[index] = {
+        ...newList[index],
+        [field]: value
+      };
+    }
+    console.log('Updated education list:', newList);
     setEducationList(newList);
     
     // Clear errors for the changed field
@@ -162,19 +176,31 @@ const EducationScreen = ({ navigation }) => {
         <DropDownPicker
           open={openStates[index].degree}
           value={education.degree}
-          items={(educationLevel && educationData[educationLevel]?.degrees) 
-            ? educationData[educationLevel].degrees.map(deg => ({
-                label: deg.name,
-                value: deg.name
-              }))
-            : []
-          }
+          items={educationData.degrees.map(deg => ({
+            label: deg.name,
+            value: deg.name
+          }))}
           setOpen={(value) => handleOpenStateChange(index, 'degree', value)}
           setValue={(callback) => {
-            const value = callback(education.degree);
-            handleEducationChange(index, 'degree', value);
-            // Reset specialization when degree changes
-            handleEducationChange(index, 'specialization', null);
+            console.log('Degree setValue called with:', callback);
+            const newList = [...educationList];
+            if (typeof callback === 'function') {
+              const newValue = callback(education.degree);
+              console.log('New degree value (from function):', newValue);
+              newList[index] = {
+                ...newList[index],
+                degree: newValue,
+                specialization: null
+              };
+            } else {
+              console.log('New degree value (direct):', callback);
+              newList[index] = {
+                ...newList[index],
+                degree: callback,
+                specialization: null
+              };
+            }
+            setEducationList(newList);
           }}
           style={styles.dropdown}
           dropDownContainerStyle={styles.dropdownList}
@@ -192,8 +218,8 @@ const EducationScreen = ({ navigation }) => {
         <DropDownPicker
           open={openStates[index].specialization}
           value={education.specialization}
-          items={(educationLevel && education.degree && educationData[educationLevel]?.degrees) 
-            ? (educationData[educationLevel].degrees.find(deg => deg.name === education.degree)?.specializations || [])
+          items={education.degree
+            ? (educationData.degrees.find(deg => deg.name === education.degree)?.specializations || [])
                 .map(spec => ({
                   label: spec,
                   value: spec
@@ -202,8 +228,12 @@ const EducationScreen = ({ navigation }) => {
           }
           setOpen={(value) => handleOpenStateChange(index, 'specialization', value)}
           setValue={(callback) => {
-            const value = callback(education.specialization);
-            handleEducationChange(index, 'specialization', value);
+            if (typeof callback === 'function') {
+              const newValue = callback(education.specialization);
+              handleEducationChange(index, 'specialization', newValue);
+            } else {
+              handleEducationChange(index, 'specialization', callback);
+            }
           }}
           style={styles.dropdown}
           dropDownContainerStyle={styles.dropdownList}
