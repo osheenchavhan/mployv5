@@ -1,7 +1,56 @@
+/**
+ * Why this file exists:
+ * When a new job seeker signs up, we need to collect their information step by step
+ * (like basic info, location, education, etc.). This file helps us:
+ * 1. Keep track of what information they've filled out
+ * 2. Save their progress as they move between steps
+ * 3. Show them how far along they are in the process
+ * 
+ * Think of it like a form wizard that remembers your answers as you go through multiple pages.
+ * Without this file, users would lose their progress if they accidentally closed the app
+ * or needed to come back later.
+ * 
+ * @fileoverview Manages the step-by-step collection of new job seeker information
+ * @package mployv5/context
+ * @lastModified 2024-12-10
+ */
+
 import React, { createContext, useContext, useState } from 'react';
 
+/**
+ * @context OnboardingContext
+ * @description Context for managing the multi-step onboarding process state
+ */
 const OnboardingContext = createContext();
 
+/**
+ * @component OnboardingProvider
+ * @description Provider component that manages onboarding state and navigation
+ * Features:
+ * - Multi-step form data management
+ * - Progress tracking
+ * - Step navigation
+ * - Form data validation
+ * 
+ * Form Sections:
+ * 1. Basic Info: Personal details
+ * 2. Location: Geographic preferences
+ * 3. Education: Academic background
+ * 4. Experience: Work history
+ * 5. Salary: Compensation expectations
+ * 
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Child components to be wrapped
+ * 
+ * @example
+ * // Wrap your app or a section with the provider
+ * <OnboardingProvider>
+ *   <OnboardingFlow />
+ * </OnboardingProvider>
+ * 
+ * // Use the context in a child component
+ * const { formData, updateFormData, currentStep } = useOnboarding();
+ */
 export const OnboardingProvider = ({ children }) => {
   const initialFormData = {
     // Basic Info
@@ -52,6 +101,33 @@ export const OnboardingProvider = ({ children }) => {
   );
 };
 
+/**
+ * @hook useOnboarding
+ * @description Custom hook to access onboarding context
+ * @returns {Object} Onboarding context object containing:
+ *   - formData: Current form state
+ *   - updateFormData: Function to update form fields
+ *   - currentStep: Current active step
+ *   - setCurrentStep: Function to navigate between steps
+ *   - getProgress: Function to calculate completion progress
+ *   - steps: Array of available steps
+ * 
+ * @throws {Error} If used outside of OnboardingProvider
+ * 
+ * @example
+ * const {
+ *   formData,
+ *   updateFormData,
+ *   currentStep,
+ *   getProgress
+ * } = useOnboarding();
+ * 
+ * // Update a form field
+ * updateFormData('firstName', 'John');
+ * 
+ * // Get current progress
+ * const progress = getProgress(); // Returns value between 0 and 1
+ */
 export const useOnboarding = () => {
   const context = useContext(OnboardingContext);
   if (!context) {

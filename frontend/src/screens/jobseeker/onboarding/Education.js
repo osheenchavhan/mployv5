@@ -1,3 +1,44 @@
+/**
+ * @fileoverview JobSeeker Education Onboarding Screen
+ * 
+ * This screen is part of the job seeker onboarding flow, collecting detailed
+ * educational background information. It supports multiple education entries
+ * and various education levels, with dynamic form validation and a user-friendly
+ * interface.
+ * 
+ * Key Features:
+ * - Multiple education level support (10th to Post Graduate)
+ * - Dynamic form fields based on education level
+ * - Multiple education entries for post-graduates
+ * - Real-time form validation
+ * - Progress tracking
+ * - Searchable institution selection
+ * 
+ * Form Fields for Each Education Entry:
+ * - Education Level (required)
+ * - Currently Pursuing Status
+ * - Degree (required)
+ * - Specialization (required)
+ * - Institution (required, searchable)
+ * - Completion Date (required)
+ *   - Month (dropdown)
+ *   - Year (numeric input)
+ * 
+ * Data Sources:
+ * - Degrees and specializations from degrees.json
+ * - Institutions from institutions.json
+ * 
+ * User Experience:
+ * The screen uses a card-based layout for multiple education entries,
+ * with intuitive dropdowns and input fields. Post-graduate users can
+ * add up to two education entries. The interface includes clear error
+ * messages and real-time validation.
+ * 
+ * @example
+ * // To navigate to the Education screen
+ * navigation.navigate('Education');
+ */
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import Container from '../../../components/common/Container';
@@ -11,6 +52,11 @@ import { MaterialIcons } from '@expo/vector-icons';
 import educationData from '../../../data/education/degrees.json';
 import institutionsData from '../../../data/education/institutions.json';
 
+/**
+ * Available education levels for selection
+ * @constant
+ * @type {Array<string>}
+ */
 const EDUCATION_LEVELS = [
   '10th or Below 10th',
   '12th Pass',
@@ -20,13 +66,51 @@ const EDUCATION_LEVELS = [
   'Post Graduate'
 ];
 
+/**
+ * Months for completion date selection
+ * @constant
+ * @type {Array<string>}
+ */
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
+/**
+ * Education screen component for job seeker onboarding
+ * 
+ * Manages the collection and validation of educational background information.
+ * Supports multiple education entries for post-graduates and various education
+ * levels with corresponding degree and specialization options.
+ * 
+ * State Management:
+ * - educationList: Array of education entries
+ * - educationLevel: Selected highest education level
+ * - errors: Validation error messages
+ * - openStates: Dropdown open/close states
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {Object} props.navigation - Navigation object for screen transitions
+ * @example
+ * return (
+ *   <EducationScreen navigation={navigation} />
+ * )
+ */
 const EducationScreen = ({ navigation }) => {
   const { formData, updateFormData } = useOnboarding();
+  
+  /**
+   * State for managing education entries
+   * @type {Array<Object>}
+   * @property {boolean} isCurrentlyPursuing - Whether the education is ongoing
+   * @property {string} degree - Selected degree
+   * @property {string} specialization - Selected specialization
+   * @property {string} institution - Selected institution
+   * @property {Object} completionDate - Completion date info
+   * @property {string} completionDate.month - Completion month
+   * @property {number} completionDate.year - Completion year
+   */
   const [educationList, setEducationList] = useState(
     formData.education?.list || [{
       isCurrentlyPursuing: false,
@@ -39,10 +123,24 @@ const EducationScreen = ({ navigation }) => {
       }
     }]
   );
+  
+  /**
+   * State for managing the highest education level
+   * @type {string}
+   */
   const [educationLevel, setEducationLevel] = useState(formData.education?.level || '');
+  
+  /**
+   * State for managing validation errors
+   * @type {Object}
+   */
   const [errors, setErrors] = useState({});
 
-  // Dropdown states for each education card
+  /**
+   * State for managing dropdown open/close states
+   * Each education entry has its own set of dropdown states
+   * @type {Array<Object>}
+   */
   const [openStates, setOpenStates] = useState(
     educationList.map(() => ({
       degree: false,
@@ -52,6 +150,15 @@ const EducationScreen = ({ navigation }) => {
     }))
   );
 
+  /**
+   * Handles the open/close state of dropdowns
+   * Ensures only one dropdown is open at a time to prevent overlapping
+   * 
+   * @function
+   * @param {number} index - Index of the education entry
+   * @param {string} field - Field name (degree, specialization, institution, month)
+   * @param {boolean} value - New open state
+   */
   const handleOpenStateChange = (index, field, value) => {
     const newOpenStates = openStates.map((state, i) => {
       if (i === index) {
@@ -63,6 +170,15 @@ const EducationScreen = ({ navigation }) => {
     setOpenStates(newOpenStates);
   };
 
+  /**
+   * Adds a new education entry for post-graduate users
+   * Only allows up to 2 education entries for post-graduates
+   * 
+   * @function
+   * @example
+   * // Add a new education entry
+   * addEducation();
+   */
   const addEducation = () => {
     if (educationLevel === 'Post Graduate' && educationList.length < 2) {
       setEducationList([...educationList, {
@@ -79,6 +195,13 @@ const EducationScreen = ({ navigation }) => {
     }
   };
 
+  /**
+   * Removes an education entry
+   * Prevents removing the last entry to ensure at least one education record
+   * 
+   * @function
+   * @param {number} index - Index of the education entry to remove
+   */
   const removeEducation = (index) => {
     if (educationList.length > 1) {
       const newList = educationList.filter((_, i) => i !== index);
@@ -88,6 +211,15 @@ const EducationScreen = ({ navigation }) => {
     }
   };
 
+  /**
+   * Updates a specific field in an education entry
+   * Handles different field types and clears corresponding errors
+   * 
+   * @function
+   * @param {number} index - Index of the education entry
+   * @param {string} field - Field to update (degree, specialization, institution, completionDate)
+   * @param {*} value - New value for the field
+   */
   const handleEducationChange = (index, field, value) => {
     console.log('Updating education:', { index, field, value });
     const newList = [...educationList];
@@ -118,6 +250,21 @@ const EducationScreen = ({ navigation }) => {
     }
   };
 
+  /**
+   * Validates all form fields
+   * Checks for required fields and proper formats
+   * 
+   * Validation Rules:
+   * - Education level must be selected
+   * - Each education entry must have:
+   *   - Degree
+   *   - Specialization
+   *   - Institution
+   *   - Completion year
+   * 
+   * @function
+   * @returns {boolean} True if form is valid, false otherwise
+   */
   const validateForm = () => {
     const newErrors = {};
     let isValid = true;
@@ -150,6 +297,12 @@ const EducationScreen = ({ navigation }) => {
     return isValid;
   };
 
+  /**
+   * Handles form submission and navigation
+   * Validates form and updates context data before proceeding
+   * 
+   * @function
+   */
   const handleNext = () => {
     if (validateForm()) {
       updateFormData('education', {
@@ -160,6 +313,15 @@ const EducationScreen = ({ navigation }) => {
     }
   };
 
+  /**
+   * Renders an education entry card
+   * Includes all form fields and validation for a single education entry
+   * 
+   * @function
+   * @param {Object} education - Education entry data
+   * @param {number} index - Index of the education entry
+   * @returns {React.ReactElement} Education card component
+   */
   const renderEducationCard = (education, index) => (
     <View key={index} style={styles.card}>
       <View style={styles.cardHeader}>
@@ -318,6 +480,13 @@ const EducationScreen = ({ navigation }) => {
     </View>
   );
 
+  /**
+   * Renders the currently pursuing section
+   * Allows users to indicate if they are currently studying
+   * 
+   * @function
+   * @returns {React.ReactElement} Currently pursuing section
+   */
   const renderCurrentlyPursuing = () => (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>Are you currently pursuing your education?</Text>
@@ -354,6 +523,13 @@ const EducationScreen = ({ navigation }) => {
     </View>
   );
 
+  /**
+   * Renders the education level selection section
+   * Displays all available education levels as selectable pills
+   * 
+   * @function
+   * @returns {React.ReactElement} Education levels section
+   */
   const renderEducationLevels = () => (
     <View style={styles.educationLevelsContainer}>
       <Text style={styles.sectionTitle}>Select your highest education level</Text>
@@ -423,6 +599,12 @@ const EducationScreen = ({ navigation }) => {
   );
 };
 
+/**
+ * Styles for the Education screen
+ * 
+ * @constant
+ * @type {Object}
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,

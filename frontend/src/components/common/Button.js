@@ -1,7 +1,54 @@
+/**
+ * @fileoverview Reusable Button component for the Mploy application
+ * @package mployv5/components/common
+ * @lastModified 2024-12-10
+ */
+
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, Platform } from 'react-native';
 import { theme } from '../../theme/theme';
 
+/**
+ * @component Button
+ * @description A customizable button component that supports different variants, sizes, and states
+ * 
+ * @param {Object} props - Component props
+ * @param {Function} props.onPress - Callback function triggered when button is pressed
+ * @param {string} props.title - Text to display inside the button
+ * @param {('primary'|'secondary'|'outline')} [props.variant='primary'] - Visual style variant of the button
+ *    - primary: Filled button with primary color
+ *    - secondary: Filled button with secondary color
+ *    - outline: Outlined button with transparent background
+ * @param {('sm'|'md'|'lg')} [props.size='md'] - Size variant of the button
+ *    - sm: Small button (height: 3xl spacing)
+ *    - md: Medium button (height: 3xl spacing)
+ *    - lg: Large button (height: 4xl spacing)
+ * @param {boolean} [props.disabled=false] - Whether the button is disabled
+ * @param {boolean} [props.loading=false] - Whether to show loading spinner
+ * @param {Object} [props.style] - Additional styles for the button container
+ * @param {Object} [props.textStyle] - Additional styles for the button text
+ * 
+ * @example
+ * // Primary button
+ * <Button 
+ *   onPress={() => console.log('pressed')}
+ *   title="Submit"
+ * />
+ * 
+ * // Disabled secondary button
+ * <Button 
+ *   variant="secondary"
+ *   disabled={true}
+ *   title="Cannot Click"
+ * />
+ * 
+ * // Loading outline button
+ * <Button 
+ *   variant="outline"
+ *   loading={true}
+ *   title="Loading..."
+ * />
+ */
 const Button = ({
   onPress,
   title,
@@ -78,6 +125,28 @@ const Button = ({
   );
 };
 
+/**
+ * @constant styles
+ * @description StyleSheet for the Button component
+ * 
+ * Styles are organized into categories:
+ * 1. Base Styles:
+ *    - button: Common styles for all buttons
+ *    - text: Common text styles
+ * 
+ * 2. Size Variants:
+ *    - smButton: Small button dimensions
+ *    - mdButton: Medium button dimensions
+ *    - lgButton: Large button dimensions
+ *    - smText: Small text size
+ *    - mdText: Medium text size
+ *    - lgText: Large text size
+ * 
+ * 3. State Styles:
+ *    - disabled: Styles applied to disabled state
+ * 
+ * Note: All measurements use the theme's spacing and typography system
+ */
 const styles = StyleSheet.create({
   button: {
     borderRadius: theme.borderRadius.md,

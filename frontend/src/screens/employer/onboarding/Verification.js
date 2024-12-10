@@ -1,3 +1,32 @@
+/**
+ * Why this screen exists:
+ * Before employers can post jobs, we need to make sure they are legitimate businesses.
+ * This screen helps:
+ * 1. Collect official business documents like:
+ *    - Business registration
+ *    - Tax documents
+ *    - Professional licenses
+ * 
+ * 2. Guide employers through the verification process:
+ *    - Shows what documents are needed
+ *    - Lets them upload files easily
+ *    - Explains why verification is important
+ * 
+ * Think of it as a security checkpoint that:
+ * - Protects job seekers from fake job posts
+ * - Builds trust in our platform
+ * - Ensures only real businesses can post jobs
+ * 
+ * Without this screen:
+ * - Anyone could pretend to be an employer
+ * - Job seekers wouldn't know if jobs are legitimate
+ * - The platform could be misused for scams
+ * 
+ * @fileoverview Handles business verification during employer onboarding
+ * @package mployv5/screens/employer/onboarding
+ * @lastModified 2024-12-10
+ */
+
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -9,6 +38,13 @@ import { useEmployerOnboarding } from '../../../context/EmployerOnboardingContex
 import { sendVerificationEmail } from '../../../services/emailService';
 import { VERIFICATION_CONSTANTS, ERROR_MESSAGES } from '../../../config/constants';
 
+/**
+ * @function Verification
+ * @description Main component for handling employer verification process
+ * @param {Object} props - Component props
+ * @param {Object} props.navigation - React Navigation object for screen navigation
+ * @returns {JSX.Element} Verification screen UI
+ */
 const Verification = ({ navigation }) => {
   const { formData } = useEmployerOnboarding();
   const [verificationStatus, setVerificationStatus] = useState({
@@ -23,7 +59,11 @@ const Verification = ({ navigation }) => {
   const isDirectEmployer = employerType.type === 'direct';
   const userEmail = "user@example.com"; // TODO: Get this from auth context
 
-  // Check if email domain matches company domain
+  /**
+   * @function canVerifyByEmail
+   * @description Checks if the user's email domain matches their company website domain
+   * @returns {boolean} True if domains match and verification by email is possible
+   */
   const canVerifyByEmail = () => {
     if (!companyInfo.website || !userEmail) return false;
     const websiteDomain = companyInfo.website.replace(/^https?:\/\//, '').split('/')[0];
@@ -31,7 +71,13 @@ const Verification = ({ navigation }) => {
     return emailDomain === websiteDomain;
   };
 
-  // Send verification email
+  /**
+   * @function handleVerificationEmail
+   * @description Sends a verification email to the user's business email
+   * @async
+   * @throws {Error} When email sending fails
+   * @returns {Promise<void>}
+   */
   const handleVerificationEmail = async () => {
     try {
       const response = await sendVerificationEmail(userEmail, companyInfo.name);
@@ -45,7 +91,13 @@ const Verification = ({ navigation }) => {
     }
   };
 
-  // Handle document upload
+  /**
+   * @function handleDocumentUpload
+   * @description Handles document selection and upload for business verification
+   * @async
+   * @throws {Error} When document upload fails or file size exceeds limit
+   * @returns {Promise<void>}
+   */
   const handleDocumentUpload = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
@@ -82,6 +134,11 @@ const Verification = ({ navigation }) => {
     }
   };
 
+  /**
+   * @function renderVerificationMethod
+   * @description Renders the appropriate verification UI based on employer type and email status
+   * @returns {JSX.Element} Verification method UI component
+   */
   const renderVerificationMethod = () => {
     if (isDirectEmployer && canVerifyByEmail()) {
       return (
@@ -130,8 +187,12 @@ const Verification = ({ navigation }) => {
     );
   };
 
+  /**
+   * @function handleContinue
+   * @description Handles navigation to Dashboard after verification process
+   * @returns {void}
+   */
   const handleContinue = () => {
-    // For both types, continue to Dashboard after verification
     navigation.reset({
       index: 0,
       routes: [{ name: 'Dashboard' }],

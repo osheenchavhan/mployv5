@@ -1,3 +1,39 @@
+/**
+ * Why this file exists:
+ * Accessing your account should be secure and seamless. This screen helps:
+ * 1. Authenticate users:
+ *    - Verify credentials
+ *    - Protect account access
+ *    - Handle login errors
+ *    - Manage login state
+ * 
+ * 2. Guide user experience:
+ *    - Direct to correct user flow
+ *    - Provide password recovery
+ *    - Enable account creation
+ *    - Handle platform differences
+ * 
+ * Think of it as your secure entrance that:
+ * - Keeps accounts protected
+ * - Makes access convenient
+ * - Guides users to help
+ * - Maintains session state
+ * 
+ * Without this screen:
+ * - Users couldn't access accounts
+ * - Security would be compromised
+ * - Recovery would be impossible
+ * - User flows would be broken
+ * 
+ * @fileoverview Handles user authentication and login
+ * @package mployv5/screens/auth
+ * @lastModified 2024-12-10
+ * 
+ * @example
+ * // Basic usage in navigation
+ * navigation.navigate('Login');
+ */
+
 import React, { useState } from 'react';
 import {
   View,
@@ -15,12 +51,33 @@ import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../../services/firebase/auth';
 import { Alert } from 'react-native';
 
+/**
+ * @function Login
+ * @description Main login screen component
+ * @returns {JSX.Element} Login form UI
+ * @example
+ * // Using in a navigation stack
+ * <Stack.Screen
+ *   name="Login"
+ *   component={Login}
+ *   options={{ headerShown: false }}
+ * />
+ */
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
+  /**
+   * @function handleLogin
+   * @description Handles user login process
+   * @returns {Promise<void>}
+   * @throws {Error} When login fails
+   * @example
+   * // Called when login button is pressed
+   * await handleLogin();
+   */
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Please enter both email and password');

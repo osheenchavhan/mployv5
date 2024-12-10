@@ -1,9 +1,51 @@
+/**
+ * Why this screen exists:
+ * Employers need a central place to manage their hiring. This screen:
+ * 1. Shows important hiring metrics:
+ *    - Active job posts
+ *    - Candidate matches
+ *    - Application statistics
+ *    - Interview schedules
+ * 
+ * 2. Provides quick access to key tasks:
+ *    - Post new jobs
+ *    - Review candidates
+ *    - Check messages
+ *    - Update company profile
+ * 
+ * Think of it as a control center that:
+ * - Gives a bird's eye view of hiring activities
+ * - Highlights what needs attention
+ * - Makes common tasks easy to find
+ * - Shows hiring progress at a glance
+ * 
+ * Without this screen:
+ * - Employers would waste time navigating between features
+ * - Important updates might be missed
+ * - There'd be no quick overview of hiring status
+ * - Managing multiple jobs would be confusing
+ * 
+ * @fileoverview Main dashboard for employers to monitor and manage their hiring activities
+ * @package mployv5/screens/employer
+ * @lastModified 2024-12-10
+ */
+
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Container from '../../components/common/Container';
 import { theme } from '../../theme/theme';
 
+/**
+ * @function DashboardCard
+ * @description Reusable card component for displaying dashboard statistics
+ * @param {Object} props - Component props
+ * @param {string} props.title - Title of the statistic
+ * @param {number} props.value - Value of the statistic
+ * @param {string} props.icon - MaterialIcons name for the card icon
+ * @param {Function} props.onPress - Callback function when card is pressed
+ * @returns {JSX.Element} Dashboard statistic card
+ */
 const DashboardCard = ({ title, value, icon, onPress }) => (
   <TouchableOpacity style={styles.card} onPress={onPress}>
     <MaterialIcons name={icon} size={24} color={theme.colors.primary.main} />
@@ -12,7 +54,22 @@ const DashboardCard = ({ title, value, icon, onPress }) => (
   </TouchableOpacity>
 );
 
+/**
+ * @function Dashboard
+ * @description Main dashboard component for employers to monitor hiring activities
+ * @param {Object} props - Component props
+ * @param {Object} props.navigation - React Navigation object for screen navigation
+ * @returns {JSX.Element} Dashboard screen UI
+ */
 const Dashboard = ({ navigation }) => {
+  /**
+   * @constant {Object} stats
+   * @description Object containing current hiring statistics
+   * @property {number} activeJobs - Number of currently active job postings
+   * @property {number} totalApplications - Total number of received applications
+   * @property {number} shortlisted - Number of shortlisted candidates
+   * @property {number} interviews - Number of scheduled interviews
+   */
   const stats = {
     activeJobs: 0,
     totalApplications: 0,

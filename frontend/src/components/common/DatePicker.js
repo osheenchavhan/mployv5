@@ -1,9 +1,62 @@
+/**
+ * @fileoverview Date picker component with platform-specific implementations
+ * @package mployv5/components/common
+ * @lastModified 2024-12-10
+ */
+
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Platform, StyleSheet } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { theme } from '../../theme/theme';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+/**
+ * @component DatePicker
+ * @description A cross-platform date picker component that adapts to iOS and Android
+ * Features:
+ * - Platform-specific date picker UI (spinner for iOS, default for Android)
+ * - Custom input field with calendar icon
+ * - Error handling and validation
+ * - Date range restrictions
+ * - Formatted date display
+ * 
+ * @param {Object} props - Component props
+ * @param {string} [props.label] - Label text above the date picker
+ * @param {Date} [props.value] - Selected date value
+ * @param {Function} props.onChange - Callback when date changes (receives Date object)
+ * @param {string} [props.error] - Error message to display
+ * @param {string} [props.placeholder='Select date'] - Placeholder text when no date is selected
+ * @param {Date} [props.maximumDate=new Date()] - Maximum selectable date (defaults to current date)
+ * @param {Date} [props.minimumDate=new Date(1900, 0, 1)] - Minimum selectable date
+ * @param {Object} [props.style] - Additional styles for the container
+ * 
+ * @example
+ * // Basic usage
+ * const [date, setDate] = useState(null);
+ * <DatePicker
+ *   label="Birth Date"
+ *   value={date}
+ *   onChange={setDate}
+ * />
+ * 
+ * // With validation
+ * <DatePicker
+ *   label="Event Date"
+ *   value={eventDate}
+ *   onChange={handleDateChange}
+ *   error={dateError}
+ *   minimumDate={new Date()}
+ * />
+ * 
+ * // Custom date range
+ * <DatePicker
+ *   label="Historical Date"
+ *   value={historicalDate}
+ *   onChange={handleHistoricalDate}
+ *   minimumDate={new Date(1950, 0, 1)}
+ *   maximumDate={new Date(2000, 11, 31)}
+ * />
+ */
 const DatePicker = ({ 
   label,
   value,
@@ -72,6 +125,30 @@ const DatePicker = ({
   );
 };
 
+/**
+ * @constant styles
+ * @description StyleSheet for the DatePicker component
+ * 
+ * Styles include:
+ * 1. Label Styling:
+ *    - Consistent font size and family from theme
+ *    - Proper spacing for visual hierarchy
+ * 
+ * 2. Date Button:
+ *    - Flex layout for icon and text alignment
+ *    - Border styling for input appearance
+ *    - Platform-consistent touch target size
+ * 
+ * 3. Text Styles:
+ *    - Different styles for selected date and placeholder
+ *    - Theme-based typography
+ * 
+ * 4. Error Handling:
+ *    - Error border color indication
+ *    - Error message styling
+ * 
+ * Note: All measurements, colors, and typography follow theme guidelines
+ */
 const styles = StyleSheet.create({
   label: {
     fontSize: theme.typography.fontSize.sm,

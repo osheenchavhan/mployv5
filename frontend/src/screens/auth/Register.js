@@ -1,3 +1,39 @@
+/**
+ * Why this file exists:
+ * Creating new accounts needs to be secure yet simple. This screen helps:
+ * 1. Register new users:
+ *    - Choose user type (job seeker or employer)
+ *    - Provide basic information
+ *    - Set up secure credentials
+ *    - Validate user input
+ * 
+ * 2. Ensure data quality:
+ *    - Validate email format
+ *    - Enforce password requirements
+ *    - Prevent duplicate accounts
+ *    - Handle registration errors
+ * 
+ * Think of it as your account creation gateway that:
+ * - Makes joining the platform easy
+ * - Ensures user data is valid
+ * - Guides users to the right experience
+ * - Protects user security
+ * 
+ * Without this screen:
+ * - Users couldn't join the platform
+ * - Data quality would be poor
+ * - User types would be mixed up
+ * - Security would be compromised
+ * 
+ * @fileoverview Handles user registration and account creation
+ * @package mployv5/screens/auth
+ * @lastModified 2024-12-10
+ * 
+ * @example
+ * // Basic usage in navigation
+ * navigation.navigate('Register');
+ */
+
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -7,6 +43,21 @@ import Button from '../../components/common/Button';
 import { theme } from '../../theme/theme';
 import { registerUser } from '../../services/firebase/auth';
 
+/**
+ * @function UserTypeButton
+ * @description Button component for selecting user type (job seeker or employer)
+ * @param {Object} props - Component props
+ * @param {string} props.title - Button text
+ * @param {boolean} props.selected - Whether this type is selected
+ * @param {Function} props.onPress - Click handler
+ * @returns {JSX.Element} User type selection button
+ * @example
+ * <UserTypeButton
+ *   title="Job Seeker"
+ *   selected={userType === 'jobseeker'}
+ *   onPress={() => setUserType('jobseeker')}
+ * />
+ */
 const UserTypeButton = ({ title, selected, onPress }) => (
   <Button
     title={title}
@@ -16,6 +67,18 @@ const UserTypeButton = ({ title, selected, onPress }) => (
   />
 );
 
+/**
+ * @function Register
+ * @description Main registration screen component
+ * @returns {JSX.Element} Registration form UI
+ * @example
+ * // Using in a navigation stack
+ * <Stack.Screen
+ *   name="Register"
+ *   component={Register}
+ *   options={{ headerShown: false }}
+ * />
+ */
 const Register = () => {
   const navigation = useNavigation();
   const [formData, setFormData] = useState({
@@ -28,6 +91,15 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  /**
+   * @function validateForm
+   * @description Validates registration form data
+   * @returns {boolean} Whether the form is valid
+   * @example
+   * if (validateForm()) {
+   *   // Proceed with registration
+   * }
+   */
   const validateForm = () => {
     const newErrors = {};
 
@@ -61,6 +133,15 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  /**
+   * @function handleRegister
+   * @description Handles user registration process
+   * @returns {Promise<void>}
+   * @throws {Error} When registration fails
+   * @example
+   * // Called when register button is pressed
+   * await handleRegister();
+   */
   const handleRegister = async () => {
     if (!validateForm()) return;
 

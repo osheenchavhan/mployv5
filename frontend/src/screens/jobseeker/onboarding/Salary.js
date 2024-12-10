@@ -1,3 +1,17 @@
+/**
+ * @component Salary
+ * @description A form component for collecting job seeker's salary expectations.
+ * This is the final screen in the onboarding flow where users can specify their
+ * salary preferences, including format (monthly/yearly), range, and minimum threshold.
+ * 
+ * Key Features:
+ * - Toggle between monthly and yearly salary formats
+ * - Set expected salary range with min/max values
+ * - Interactive slider for minimum salary threshold
+ * - Input validation for salary range
+ * - Navigation to job swiping screen upon completion
+ */
+
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Container from '../../../components/common/Container';
@@ -7,15 +21,36 @@ import Chip from '../../../components/common/Chip';
 import Slider from '@react-native-community/slider';
 import { theme } from '../../../theme/theme';
 
+/** @constant {string[]} SALARY_FORMATS - Available salary format options */
 const SALARY_FORMATS = ['Monthly', 'Yearly'];
 
+/**
+ * Salary Screen Component
+ * @param {Object} props - Component props
+ * @param {Object} props.navigation - React Navigation prop for screen navigation
+ * @returns {JSX.Element} Salary configuration screen
+ */
 const Salary = ({ navigation }) => {
+  // State Management
+  /** @state {string} salaryFormat - Selected salary format (Monthly/Yearly) */
   const [salaryFormat, setSalaryFormat] = useState('Monthly');
+  /** @state {string} minSalary - Minimum expected salary */
   const [minSalary, setMinSalary] = useState('');
+  /** @state {string} maxSalary - Maximum expected salary */
   const [maxSalary, setMaxSalary] = useState('');
+  /** @state {number} minThreshold - Minimum salary threshold for job visibility */
   const [minThreshold, setMinThreshold] = useState(0);
+  /** @state {Object} errors - Form validation errors */
   const [errors, setErrors] = useState({});
 
+  /**
+   * Validates form and completes onboarding
+   * @function handleFinish
+   * @description
+   * 1. Validates required fields and salary range logic
+   * 2. If valid, resets navigation stack and moves to SwipeJobs screen
+   * 3. If invalid, displays appropriate error messages
+   */
   const handleFinish = () => {
     const newErrors = {};
     if (!minSalary) newErrors.minSalary = 'Minimum salary is required';
@@ -116,6 +151,18 @@ const Salary = ({ navigation }) => {
   );
 };
 
+/**
+ * Component Styles
+ * @constant styles
+ * @description Defines the styling for all components in the Salary screen
+ * Key sections:
+ * - Container and spacing layout
+ * - Typography for titles, labels, and values
+ * - Input field customization
+ * - Slider styling
+ * - Button container layout
+ * - Responsive spacing using theme variables
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,

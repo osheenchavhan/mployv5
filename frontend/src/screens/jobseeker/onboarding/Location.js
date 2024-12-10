@@ -1,3 +1,18 @@
+/**
+ * @component LocationScreen
+ * @description A location-based component that allows job seekers to set their job search area.
+ * This screen is part of the onboarding flow and handles location services, permissions,
+ * and search radius configuration. It uses Google Maps for visualization and Expo Location
+ * for device location services.
+ * 
+ * Key Features:
+ * - Real-time location tracking
+ * - Interactive map with search radius visualization
+ * - Configurable search radius with slider
+ * - Location services status monitoring
+ * - Graceful error handling for location permissions
+ */
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Platform, Alert, Linking } from 'react-native';
 import MapView, { Marker, Circle, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -10,16 +25,48 @@ import { useOnboarding } from '../../../context/OnboardingContext';
 import ProgressBar from '../../../components/common/ProgressBar';
 import { GOOGLE_MAPS_API_KEY } from '@env';
 
+/**
+ * @constant {number[]} radiusOptions - Available search radius options in kilometers
+ */
 const radiusOptions = [5, 10, 15, 20, 25]; // in kilometers
 
+/**
+ * Location Screen Component
+ * @param {Object} props - Component props
+ * @param {Object} props.navigation - React Navigation prop for screen navigation
+ * @returns {JSX.Element} Location configuration screen
+ */
 const LocationScreen = ({ navigation }) => {
   const { formData, updateFormData } = useOnboarding();
+  
+  // State Management
+  /**
+   * @state {Object} errors - Validation and location service errors
+   */
   const [errors, setErrors] = useState({});
+  /**
+   * @state {Object|null} location - Current user location coordinates
+   */
   const [location, setLocation] = useState(null);
+  /**
+   * @state {number} searchRadius - Selected job search radius in kilometers
+   */
   const [searchRadius, setSearchRadius] = useState(10); // default 10km
+  /**
+   * @state {Object|null} locationSubscription - Location watcher subscription
+   */
   const [locationSubscription, setLocationSubscription] = useState(null);
+  /**
+   * @state {boolean} isLocationEnabled - Device location services status
+   */
   const [isLocationEnabled, setIsLocationEnabled] = useState(false);
 
+  /**
+   * Checks if device location services are enabled
+   * @async
+   * @function checkLocationServices
+   * @returns {Promise<boolean>} Location services status
+   */
   const checkLocationServices = async () => {
     try {
       const enabled = await Location.hasServicesEnabledAsync();
@@ -31,6 +78,11 @@ const LocationScreen = ({ navigation }) => {
     }
   };
 
+  /**
+   * Opens device settings for location services configuration
+   * @function openLocationSettings
+   * @description Displays an alert dialog prompting user to enable location services
+   */
   const openLocationSettings = () => {
     Alert.alert(
       "Location Services Disabled",
@@ -48,6 +100,16 @@ const LocationScreen = ({ navigation }) => {
     );
   };
 
+  /**
+   * Sets up location tracking and permissions
+   * @async
+   * @function setupLocation
+   * @description
+   * 1. Verifies location services are enabled
+   * 2. Requests location permissions
+   * 3. Gets initial location (last known and current)
+   * 4. Sets up location change subscription
+   */
   const setupLocation = async () => {
     try {
       // Check if location services are enabled
@@ -113,33 +175,14 @@ const LocationScreen = ({ navigation }) => {
     }
   };
 
-  // Check location services status periodically
-  useEffect(() => {
-    const locationCheckInterval = setInterval(async () => {
-      const enabled = await checkLocationServices();
-      if (enabled && !location) {
-        setupLocation();
-      }
-    }, 3000); // Check every 3 seconds
-
-    return () => clearInterval(locationCheckInterval);
-  }, [location]);
-
-  useEffect(() => {
-    setupLocation();
-    return () => {
-      if (locationSubscription) {
-        locationSubscription.remove();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (searchRadius) {
-      updateFormData('searchRadius', searchRadius);
-    }
-  }, [searchRadius]);
-
+  /**
+   * Validates and handles navigation to next screen
+   * @function handleNext
+   * @description
+   * - Validates location is available
+   * - Prompts for location services if disabled
+   * - Navigates to Education screen if valid
+   */
   const handleNext = () => {
     const newErrors = {};
     if (!location) {
@@ -155,10 +198,19 @@ const LocationScreen = ({ navigation }) => {
     navigation.navigate('Education');
   };
 
+  /**
+   * Navigates back to previous screen
+   * @function handleBack
+   */
   const handleBack = () => {
     navigation.goBack();
   };
 
+  /**
+   * Renders location error message and settings button
+   * @function renderLocationError
+   * @returns {JSX.Element|null} Error message component or null
+   */
   const renderLocationError = () => {
     if (!errors.location) return null;
 
@@ -174,6 +226,49 @@ const LocationScreen = ({ navigation }) => {
       </View>
     );
   };
+
+  // Effects
+
+  /**
+   * Location services monitoring effect
+   * @effect
+   * @description Periodically checks location services status
+   */
+  useEffect(() => {
+    const locationCheckInterval = setInterval(async () => {
+      const enabled = await checkLocationServices();
+      if (enabled && !location) {
+        setupLocation();
+      }
+    }, 3000); // Check every 3 seconds
+
+    return () => clearInterval(locationCheckInterval);
+  }, [location]);
+
+  /**
+   * Location setup and cleanup effect
+   * @effect
+   * @description Initializes location tracking and cleans up subscription
+   */
+  useEffect(() => {
+    setupLocation();
+    return () => {
+      if (locationSubscription) {
+        locationSubscription.remove();
+      }
+    };
+  }, []);
+
+  /**
+   * Search radius sync effect
+   * @effect
+   * @description Updates form data when search radius changes
+   */
+  useEffect(() => {
+    if (searchRadius) {
+      updateFormData('searchRadius', searchRadius);
+    }
+  }, [searchRadius]);
 
   return (
     <Container>
@@ -266,6 +361,18 @@ const LocationScreen = ({ navigation }) => {
   );
 };
 
+/**
+ * Component Styles
+ * @constant styles
+ * @description Defines the styling for all components in the Location screen
+ * Key sections:
+ * - Progress bar positioning
+ * - Container and map layout
+ * - Typography for titles and labels
+ * - Error message styling
+ * - Radius slider and markers
+ * - Button container layout
+ */
 const styles = StyleSheet.create({
   progress: {
     marginTop: Platform.OS === 'ios' ? 50 : 20,

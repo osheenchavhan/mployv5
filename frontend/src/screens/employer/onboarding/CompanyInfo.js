@@ -1,3 +1,33 @@
+/**
+ * Why this screen exists:
+ * Job seekers need to know who they might work for. This screen helps employers:
+ * 1. Share their company story:
+ *    - Company name and website
+ *    - Industry and company size
+ *    - Mission and values
+ *    - Company description that attracts talent
+ * 
+ * 2. Build their employer brand:
+ *    - Upload company logo
+ *    - Add photos of workplace
+ *    - Highlight company culture
+ *    - Show what makes them unique
+ * 
+ * Think of it as your company's digital business card that:
+ * - Makes a great first impression on candidates
+ * - Shows why someone would want to work there
+ * - Helps job seekers recognize your brand
+ * 
+ * Without this screen:
+ * - Job seekers wouldn't know anything about potential employers
+ * - Companies couldn't showcase their unique culture
+ * - Job posts would lack important context about the workplace
+ * 
+ * @fileoverview Collects and displays company profile information during employer onboarding
+ * @package mployv5/screens/employer/onboarding
+ * @lastModified 2024-12-10
+ */
+
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Platform } from 'react-native';
 import Container from '../../../components/common/Container';
@@ -9,6 +39,12 @@ import { useEmployerOnboarding } from '../../../context/EmployerOnboardingContex
 import ProgressBar from '../../../components/common/ProgressBar';
 import * as ImagePicker from 'expo-image-picker';
 
+/**
+ * @constant {Array<Object>} companySizes
+ * @description Predefined options for company size selection
+ * @property {string} label - Display text for the size option
+ * @property {string} value - Value stored for the size option
+ */
 const companySizes = [
   { label: '1-10 employees', value: '1-10' },
   { label: '11-50 employees', value: '11-50' },
@@ -17,6 +53,12 @@ const companySizes = [
   { label: '500+ employees', value: '500+' }
 ];
 
+/**
+ * @constant {Array<Object>} industrySpecializations
+ * @description Predefined options for industry and specialization selection
+ * @property {string} label - Display text for the industry option
+ * @property {string} value - Value stored for the industry option
+ */
 const industrySpecializations = [
   { label: 'Technology', value: 'technology' },
   { label: 'Healthcare', value: 'healthcare' },
@@ -30,6 +72,13 @@ const industrySpecializations = [
   { label: 'Other', value: 'other' }
 ];
 
+/**
+ * @function CompanyInfo
+ * @description Component for collecting and managing company/agency information during onboarding
+ * @param {Object} props - Component props
+ * @param {Object} props.navigation - React Navigation object for screen navigation
+ * @returns {JSX.Element} Company information form UI
+ */
 const CompanyInfo = ({ navigation }) => {
   const { formData, updateFormData, getProgress } = useEmployerOnboarding();
   const [errors, setErrors] = useState({});
@@ -37,6 +86,13 @@ const CompanyInfo = ({ navigation }) => {
   const [isSpecializationsOpen, setIsSpecializationsOpen] = useState(false);
   const isDirectEmployer = formData.employerType.type === 'direct';
 
+  /**
+   * @function handleImagePick
+   * @description Handles company logo image selection from device gallery
+   * @async
+   * @throws {Error} When permission is denied or image selection fails
+   * @returns {Promise<void>}
+   */
   const handleImagePick = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
@@ -56,6 +112,11 @@ const CompanyInfo = ({ navigation }) => {
     }
   };
 
+  /**
+   * @function validateForm
+   * @description Validates all company/agency information fields
+   * @returns {boolean} True if all required fields are valid
+   */
   const validateForm = () => {
     const newErrors = {};
     
@@ -93,6 +154,11 @@ const CompanyInfo = ({ navigation }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  /**
+   * @function handleNext
+   * @description Validates form and navigates to next screen based on employer type
+   * @returns {void}
+   */
   const handleNext = () => {
     if (validateForm()) {
       if (isDirectEmployer) {

@@ -1,7 +1,56 @@
+/**
+ * @fileoverview Radio group component for single selection from multiple options
+ * @package mployv5/components/common
+ * @lastModified 2024-12-10
+ */
+
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { theme } from '../../theme/theme';
 
+/**
+ * @component RadioGroup
+ * @description A flexible radio button group component for single selection
+ * Features:
+ * - Vertical or horizontal layout options
+ * - Custom label support
+ * - Error state handling
+ * - Animated selection indicator
+ * - Consistent theme-based styling
+ * 
+ * @param {Object} props - Component props
+ * @param {string} [props.label] - Group label text
+ * @param {Array<{value: any, label: string}>} props.options - Array of options to display
+ * @param {any} props.value - Currently selected value
+ * @param {Function} props.onChange - Callback when selection changes (receives selected value)
+ * @param {string} [props.error] - Error message to display
+ * @param {Object} [props.style] - Additional styles for container
+ * @param {('vertical'|'horizontal')} [props.direction='vertical'] - Layout direction
+ * 
+ * @example
+ * // Basic vertical radio group
+ * const options = [
+ *   { value: 'option1', label: 'Option 1' },
+ *   { value: 'option2', label: 'Option 2' }
+ * ];
+ * 
+ * <RadioGroup
+ *   label="Select an option"
+ *   options={options}
+ *   value={selectedValue}
+ *   onChange={handleChange}
+ * />
+ * 
+ * // Horizontal layout with validation
+ * <RadioGroup
+ *   label="Choose one"
+ *   options={options}
+ *   value={value}
+ *   onChange={handleChange}
+ *   error={validationError}
+ *   direction="horizontal"
+ * />
+ */
 const RadioGroup = ({ 
   label,
   options,
@@ -48,6 +97,32 @@ const RadioGroup = ({
   );
 };
 
+/**
+ * @constant styles
+ * @description StyleSheet for the RadioGroup component
+ * 
+ * Styles include:
+ * 1. Layout Management:
+ *    - Flexible container layouts (vertical/horizontal)
+ *    - Proper spacing between options
+ *    - Alignment of radio buttons and labels
+ * 
+ * 2. Radio Button Design:
+ *    - Outer circle with border
+ *    - Inner circle for selection
+ *    - Proper sizing and spacing
+ * 
+ * 3. Typography:
+ *    - Consistent font sizes
+ *    - Theme-based font families
+ *    - Color management
+ * 
+ * 4. Error Handling:
+ *    - Error message styling
+ *    - Proper spacing for error display
+ * 
+ * Note: All measurements and colors follow theme guidelines
+ */
 const styles = StyleSheet.create({
   label: {
     fontSize: theme.typography.fontSize.sm,

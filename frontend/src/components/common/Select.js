@@ -1,3 +1,9 @@
+/**
+ * @fileoverview A customizable select/dropdown component with modal option picker
+ * @package mployv5/components/common
+ * @lastModified 2024-12-10
+ */
+
 import React, { useState } from 'react';
 import { 
   View, 
@@ -11,6 +17,50 @@ import {
 import { theme } from '../../theme/theme';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+/**
+ * @component Select
+ * @description A modal-based select component for choosing from a list of options
+ * Features:
+ * - Bottom sheet modal with smooth animations
+ * - Custom label and placeholder support
+ * - Error state handling
+ * - Visual feedback for selected option
+ * - Safe area aware for notched devices
+ * - Customizable styling
+ * 
+ * @param {Object} props - Component props
+ * @param {string} [props.label] - Label text above select
+ * @param {any} props.value - Currently selected value
+ * @param {Array<{value: any, label: string}>} props.options - Array of selectable options
+ * @param {string} [props.placeholder='Select an option'] - Placeholder text when no option selected
+ * @param {Function} props.onChange - Callback when selection changes (receives selected value)
+ * @param {string} [props.error] - Error message to display
+ * @param {Object} [props.style] - Additional styles for container
+ * 
+ * @example
+ * // Basic select with options
+ * const options = [
+ *   { value: '1', label: 'Option 1' },
+ *   { value: '2', label: 'Option 2' }
+ * ];
+ * 
+ * <Select
+ *   label="Choose an option"
+ *   options={options}
+ *   value={selectedValue}
+ *   onChange={handleChange}
+ * />
+ * 
+ * // Select with error state
+ * <Select
+ *   label="Required field"
+ *   options={options}
+ *   value={value}
+ *   onChange={handleChange}
+ *   error="This field is required"
+ *   placeholder="Please select an option"
+ * />
+ */
 const Select = ({ 
   label,
   value,
@@ -104,6 +154,34 @@ const Select = ({
   );
 };
 
+/**
+ * @constant styles
+ * @description StyleSheet for the Select component
+ * 
+ * Style Categories:
+ * 1. Select Button:
+ *    - Consistent border and padding
+ *    - Flexible layout for label and icon
+ *    - Error state styling
+ * 
+ * 2. Modal Design:
+ *    - Bottom sheet animation
+ *    - Semi-transparent backdrop
+ *    - Rounded corners for modal
+ *    - Safe area handling
+ * 
+ * 3. Option List:
+ *    - Clear visual hierarchy
+ *    - Selected state indicator
+ *    - Proper spacing and separators
+ * 
+ * 4. Typography:
+ *    - Consistent text styles
+ *    - Theme-based colors
+ *    - Proper emphasis for selected items
+ * 
+ * Note: All measurements and colors follow theme guidelines
+ */
 const styles = StyleSheet.create({
   label: {
     fontSize: theme.typography.fontSize.sm,

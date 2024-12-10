@@ -1,3 +1,32 @@
+/**
+ * Why this screen exists:
+ * Different types of employers have different needs. This screen helps:
+ * 1. Identify employer categories:
+ *    - Direct employers (companies hiring for themselves)
+ *    - Recruitment agencies (hiring for clients)
+ *    - Startups vs established companies
+ * 
+ * 2. Customize the experience based on type:
+ *    - Show relevant features and tools
+ *    - Adjust verification requirements
+ *    - Provide appropriate pricing plans
+ *    - Tailor the job posting process
+ * 
+ * Think of it as a sorting system that:
+ * - Makes sure employers get the right tools for their needs
+ * - Helps job seekers understand who they're dealing with
+ * - Keeps the hiring process transparent
+ * 
+ * Without this screen:
+ * - We couldn't customize the experience for different employer types
+ * - Job seekers wouldn't know if they're talking to a company or agency
+ * - The platform would be less efficient for specific employer needs
+ * 
+ * @fileoverview Determines the type of employer during onboarding to customize their experience
+ * @package mployv5/screens/employer/onboarding
+ * @lastModified 2024-12-10
+ */
+
 import React from 'react';
 import { View, Text, StyleSheet, Platform, TouchableOpacity, Animated } from 'react-native';
 import Container from '../../../components/common/Container';
@@ -7,13 +36,31 @@ import { useEmployerOnboarding } from '../../../context/EmployerOnboardingContex
 import ProgressBar from '../../../components/common/ProgressBar';
 import { MaterialIcons } from '@expo/vector-icons';
 
+/**
+ * @function EmployerType
+ * @description Component for selecting the type of employer during onboarding
+ * @param {Object} props - Component props
+ * @param {Object} props.navigation - React Navigation object for screen navigation
+ * @returns {JSX.Element} Employer type selection UI
+ */
 const EmployerType = ({ navigation }) => {
   const { formData, updateFormData, getProgress, setCurrentStep } = useEmployerOnboarding();
 
+  /**
+   * @function handleTypeSelection
+   * @description Updates the employer type in form data when user selects an option
+   * @param {string} value - Selected employer type ('direct' or 'agency')
+   * @returns {void}
+   */
   const handleTypeSelection = (value) => {
     updateFormData('employerType', 'type', value);
   };
 
+  /**
+   * @function handleNext
+   * @description Validates selection and navigates to company info screen
+   * @returns {void}
+   */
   const handleNext = () => {
     if (formData.employerType.type) {
       setCurrentStep('CompanyInfo');
@@ -21,6 +68,12 @@ const EmployerType = ({ navigation }) => {
     }
   };
 
+  /**
+   * @function isSelected
+   * @description Checks if the given employer type is currently selected
+   * @param {string} type - Employer type to check ('direct' or 'agency')
+   * @returns {boolean} True if the type is selected
+   */
   const isSelected = (type) => formData.employerType.type === type;
 
   return (

@@ -1,3 +1,18 @@
+/**
+ * @component Experience
+ * @description A comprehensive form component for collecting job seeker's work experience details.
+ * This screen is part of the onboarding flow and handles both experienced and fresher candidates.
+ * It captures details like total experience, current job details, salary information, and notice period.
+ * 
+ * Key Features:
+ * - Toggle between experienced and fresher status
+ * - Capture total years and months of experience
+ * - Collect current/last job details including title, roles, and company
+ * - Handle current employment status and notice period
+ * - Manage salary information
+ * - Validate all required fields before proceeding
+ */
+
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import Container from '../../../components/common/Container';
@@ -10,6 +25,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import industriesData from '../../../data/experience/industries.json';
 import Chip from '../../../components/common/Chip';
 
+// Constants for dropdown options
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'
@@ -42,25 +58,57 @@ const NOTICE_PERIODS = [
   '3 or more months'
 ];
 
+/**
+ * Experience Screen Component
+ * @param {Object} props - Component props
+ * @param {Object} props.navigation - React Navigation prop for screen navigation
+ * @returns {JSX.Element} Experience form screen
+ */
 const Experience = ({ navigation }) => {
-  const { formData, updateFormData } = useOnboarding();
+  // State Management
+  /** @state {boolean} hasExperience - Tracks if user has work experience */
   const [hasExperience, setHasExperience] = useState(true);
+  /** @state {string} experienceYears - Total years of experience */
   const [experienceYears, setExperienceYears] = useState('');
+  /** @state {string} experienceMonths - Additional months of experience */
   const [experienceMonths, setExperienceMonths] = useState('');
+  /** @state {string} jobTitle - Current/Last job title */
   const [jobTitle, setJobTitle] = useState('');
+  /** @state {Array<string>} selectedRoles - List of selected job roles (max 3) */
   const [selectedRoles, setSelectedRoles] = useState([]);
+  /** @state {string} companyName - Current/Last company name */
   const [companyName, setCompanyName] = useState('');
+  /** @state {string} industry - Selected industry */
   const [industry, setIndustry] = useState('');
+  /** @state {boolean} openIndustry - Controls industry dropdown visibility */
   const [openIndustry, setOpenIndustry] = useState(false);
+  /** @state {boolean} currentlyWorking - Indicates if user is currently employed */
   const [currentlyWorking, setCurrentlyWorking] = useState(true);
+  /** @state {string} noticePeriod - Selected notice period */
   const [noticePeriod, setNoticePeriod] = useState('1 month');
+  /** @state {string} currentSalary - Current/Last salary */
   const [currentSalary, setCurrentSalary] = useState('');
+  /** @state {string} startMonth - Employment start month */
   const [startMonth, setStartMonth] = useState('');
+  /** @state {string} startYear - Employment start year */
   const [startYear, setStartYear] = useState('');
+  /** @state {boolean} openStartMonth - Controls start month dropdown visibility */
   const [openStartMonth, setOpenStartMonth] = useState(false);
+  /** @state {boolean} openStartYear - Controls start year dropdown visibility */
   const [openStartYear, setOpenStartYear] = useState(false);
+  /** @state {Object} errors - Form validation errors */
   const [errors, setErrors] = useState({});
 
+  const { formData, updateFormData } = useOnboarding();
+
+  /**
+   * Handles form validation and navigation to next screen
+   * @function handleNextPress
+   * @description 
+   * 1. Validates all required fields based on user's experience status
+   * 2. If validation fails, displays appropriate error messages
+   * 3. If validation passes, updates form data and navigates to Salary screen
+   */
   const handleNextPress = () => {
     const newErrors = {};
 
@@ -99,6 +147,14 @@ const Experience = ({ navigation }) => {
     navigation.navigate('Salary');
   };
 
+  /**
+   * Toggles selection of job roles
+   * @function toggleRole
+   * @param {string} role - Role to toggle
+   * @description
+   * - Adds or removes a role from selectedRoles array
+   * - Maintains maximum limit of 3 selected roles
+   */
   const toggleRole = (role) => {
     if (selectedRoles.includes(role)) {
       setSelectedRoles(selectedRoles.filter(r => r !== role));
@@ -305,6 +361,17 @@ const Experience = ({ navigation }) => {
   );
 };
 
+/**
+ * Component Styles
+ * @constant styles
+ * @description Defines the styling for all components in the Experience screen
+ * Key sections:
+ * - Container and card layouts
+ * - Typography styles for titles, labels, and notes
+ * - Input field customizations
+ * - Dropdown and date picker styles
+ * - Responsive spacing and margins
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,

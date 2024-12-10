@@ -1,3 +1,35 @@
+/**
+ * Why this screen exists:
+ * Location matters in job searching. This screen helps employers:
+ * 1. Set up their workplace locations:
+ *    - Main office address
+ *    - Branch locations
+ *    - Remote work options
+ *    - Hybrid work possibilities
+ * 
+ * 2. Define their hiring reach:
+ *    - Local hiring radius
+ *    - Cities they operate in
+ *    - Countries they can hire from
+ *    - Remote work boundaries
+ * 
+ * Think of it as a map that:
+ * - Shows job seekers where they might work
+ * - Helps match jobs with local talent
+ * - Makes commute planning easier
+ * - Clarifies work arrangement options
+ * 
+ * Without this screen:
+ * - Job seekers wouldn't know where jobs are located
+ * - Remote work options would be unclear
+ * - Location-based job matching wouldn't work
+ * - Commute considerations would be missing
+ * 
+ * @fileoverview Manages company location information and work arrangement options
+ * @package mployv5/screens/employer/onboarding
+ * @lastModified 2024-12-10
+ */
+
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, TextInput } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -7,6 +39,14 @@ import { theme } from '../../../theme/theme';
 import { useEmployerOnboarding } from '../../../context/EmployerOnboardingContext';
 import ProgressBar from '../../../components/common/ProgressBar';
 
+/**
+ * @constant {Array<Object>} remoteOptions
+ * @description Predefined options for remote work policy selection
+ * @property {string} id - Unique identifier for the policy option
+ * @property {string} icon - MaterialIcons name for the policy option
+ * @property {string} title - Display title for the policy option
+ * @property {string} description - Detailed description of the policy
+ */
 const remoteOptions = [
   {
     id: 'onsite',
@@ -28,16 +68,35 @@ const remoteOptions = [
   }
 ];
 
+/**
+ * @function Location
+ * @description Component for managing company location and work arrangement preferences
+ * @param {Object} props - Component props
+ * @param {Object} props.navigation - React Navigation object for screen navigation
+ * @returns {JSX.Element} Location and work policy selection UI
+ */
 const Location = ({ navigation }) => {
   const { formData, updateFormData, getProgress } = useEmployerOnboarding();
   const [selectedPolicy, setSelectedPolicy] = useState(formData.locationPreferences?.remoteWorkPolicy || null);
   const [address, setAddress] = useState(formData.locationPreferences?.primaryLocation?.address || '');
 
+  /**
+   * @function handlePolicySelect
+   * @description Updates the selected remote work policy in form data
+   * @param {string} policy - Selected policy ID ('onsite', 'hybrid', or 'remote')
+   * @returns {void}
+   */
   const handlePolicySelect = (policy) => {
     setSelectedPolicy(policy);
     updateFormData('locationPreferences', 'remoteWorkPolicy', policy);
   };
 
+  /**
+   * @function handleAddressChange
+   * @description Updates the company address in form data
+   * @param {string} text - New address text
+   * @returns {void}
+   */
   const handleAddressChange = (text) => {
     setAddress(text);
     updateFormData('locationPreferences', 'primaryLocation', {
@@ -46,6 +105,11 @@ const Location = ({ navigation }) => {
     });
   };
 
+  /**
+   * @function handleNext
+   * @description Validates selections and navigates to verification screen
+   * @returns {void}
+   */
   const handleNext = () => {
     if (selectedPolicy) {
       navigation.navigate('Verification');

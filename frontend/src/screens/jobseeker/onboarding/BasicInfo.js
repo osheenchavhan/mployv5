@@ -1,3 +1,33 @@
+/**
+ * @fileoverview JobSeeker Basic Information Onboarding Screen
+ * 
+ * This screen is part of the job seeker onboarding flow, collecting essential
+ * personal information from the user. It's typically the first screen in the
+ * onboarding process, setting up the foundation for the user's profile.
+ * 
+ * Key Features:
+ * - Personal information collection (name, DOB, gender, phone)
+ * - Real-time form validation
+ * - Progress tracking
+ * - Smooth navigation between onboarding steps
+ * 
+ * Form Fields:
+ * - First Name (required)
+ * - Last Name (required)
+ * - Date of Birth (required, must be in the past)
+ * - Gender (required, options: male/female/other)
+ * - Phone Number (required, 10 digits)
+ * 
+ * User Experience:
+ * The screen features a clean, step-by-step form with clear labels and error messages.
+ * A progress bar at the top helps users track their position in the onboarding flow.
+ * Validation occurs in real-time, providing immediate feedback to users.
+ * 
+ * @example
+ * // To navigate to the BasicInfo screen
+ * navigation.navigate('BasicInfo');
+ */
+
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
 import Container from '../../../components/common/Container';
@@ -9,16 +39,47 @@ import { theme } from '../../../theme/theme';
 import { useOnboarding } from '../../../context/OnboardingContext';
 import ProgressBar from '../../../components/common/ProgressBar';
 
+/**
+ * Gender options for the radio group selection
+ * @constant
+ * @type {Array<{label: string, value: string}>}
+ */
 const genderOptions = [
   { label: 'Male', value: 'male' },
   { label: 'Female', value: 'female' },
   { label: 'Other', value: 'other' }
 ];
 
+/**
+ * BasicInfo screen component for job seeker onboarding
+ * 
+ * Collects and validates basic personal information from the user during
+ * the onboarding process.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {Object} props.navigation - Navigation object for screen transitions
+ * @example
+ * return (
+ *   <BasicInfo navigation={navigation} />
+ * )
+ */
 const BasicInfo = ({ navigation }) => {
   const { formData, updateFormData, setCurrentStep } = useOnboarding();
   const [errors, setErrors] = useState({});
 
+  /**
+   * Validates the form data
+   * 
+   * Checks all required fields and format requirements:
+   * - First and last name must be provided
+   * - Date of birth must be selected
+   * - Gender must be selected
+   * - Phone number must be 10 digits
+   * 
+   * @function
+   * @returns {boolean} True if form is valid, false otherwise
+   */
   const validateForm = () => {
     const newErrors = {};
     if (!formData.firstName) {
@@ -43,6 +104,15 @@ const BasicInfo = ({ navigation }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  /**
+   * Handles the next button press
+   * 
+   * Validates the form and if valid:
+   * 1. Updates the current onboarding step
+   * 2. Navigates to the Location screen
+   * 
+   * @function
+   */
   const handleNext = () => {
     if (validateForm()) {
       setCurrentStep('Location');
@@ -148,6 +218,12 @@ const BasicInfo = ({ navigation }) => {
   );
 };
 
+/**
+ * Styles for the BasicInfo component
+ * 
+ * @constant
+ * @type {Object}
+ */
 const styles = StyleSheet.create({
   progress: {
     marginTop: Platform.OS === 'ios' ? 50 : 20,

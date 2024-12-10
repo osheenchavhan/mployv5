@@ -1,3 +1,42 @@
+/**
+ * Why this file exists:
+ * Creating job posts needs to be thorough yet simple. This screen helps:
+ * 1. Create job listings:
+ *    - Enter job details
+ *    - Set requirements
+ *    - Specify compensation
+ *    - Define location preferences
+ * 
+ * 2. Manage job posts:
+ *    - Save as drafts
+ *    - Publish listings
+ *    - Edit existing posts
+ *    - Track post status
+ * 
+ * Think of it as your job creation hub that:
+ * - Makes posting jobs straightforward
+ * - Ensures all key details are included
+ * - Helps write better job descriptions
+ * - Maintains posting consistency
+ * 
+ * Without this screen:
+ * - Job posts would lack structure
+ * - Important details might be missed
+ * - Posting jobs would be confusing
+ * - Managing drafts would be difficult
+ * 
+ * @fileoverview Manages creation and editing of job postings
+ * @package mployv5/screens/employer
+ * @lastModified 2024-12-10
+ * 
+ * @example
+ * // Creating a new job post
+ * <PostJob />
+ * 
+ * // Editing an existing job
+ * <PostJob jobId="existing-job-id" />
+ */
+
 import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet, Alert, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +47,18 @@ import Chip from '../../../components/common/Chip';
 import Select from '../../../components/common/Select';
 import { theme } from '../../../theme/theme';
 
+/**
+ * @constant {string[]} employmentTypes
+ * @description Available employment type options for job postings
+ * @example
+ * // Using employment types in a select component
+ * <Select
+ *   options={employmentTypes.map(type => ({
+ *     label: type.charAt(0).toUpperCase() + type.slice(1),
+ *     value: type
+ *   }))}
+ * />
+ */
 const employmentTypes = [
   'full-time',
   'part-time',
@@ -15,6 +66,18 @@ const employmentTypes = [
   'internship'
 ];
 
+/**
+ * @constant {string[]} experienceLevels
+ * @description Available experience level options for job postings
+ * @example
+ * // Using experience levels in a select component
+ * <Select
+ *   options={experienceLevels.map(level => ({
+ *     label: level.charAt(0).toUpperCase() + level.slice(1),
+ *     value: level
+ *   }))}
+ * />
+ */
 const experienceLevels = [
   'entry',
   'mid',
@@ -22,11 +85,41 @@ const experienceLevels = [
   'executive'
 ];
 
-const PostJob = () => {
+/**
+ * @function PostJob
+ * @description Main component for creating and editing job postings
+ * @param {Object} props - Component props
+ * @param {string} [props.jobId] - Optional ID of existing job to edit
+ * @returns {JSX.Element} Job posting form UI
+ * @example
+ * // Creating a new job
+ * const NewJobScreen = () => (
+ *   <PostJob />
+ * );
+ * 
+ * // Editing an existing job
+ * const EditJobScreen = () => (
+ *   <PostJob jobId="job-123" />
+ * );
+ */
+const PostJob = ({ jobId }) => {
   const navigation = useNavigation();
   const { currentJob, updateJobField, errors, saveJob, loading } = useJobPosting();
   const [localErrors, setLocalErrors] = useState({});
 
+  /**
+   * @function handleSave
+   * @description Saves or publishes the job posting based on status
+   * @param {string} status - Job status ('draft' or 'active')
+   * @returns {Promise<void>}
+   * @throws {Error} When saving job fails
+   * @example
+   * // Save as draft
+   * await handleSave('draft');
+   * 
+   * // Publish job
+   * await handleSave('active');
+   */
   const handleSave = async (status) => {
     try {
       const success = await saveJob(status);
