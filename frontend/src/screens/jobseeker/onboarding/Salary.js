@@ -13,13 +13,14 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Platform } from 'react-native';
 import Container from '../../../components/common/Container';
 import Button from '../../../components/common/Button';
 import Input from '../../../components/common/Input';
 import Chip from '../../../components/common/Chip';
 import Slider from '@react-native-community/slider';
 import { theme } from '../../../theme/theme';
+import { useOnboarding } from '../../../context/OnboardingContext';
 
 /** @constant {string[]} SALARY_FORMATS - Available salary format options */
 const SALARY_FORMATS = ['Monthly', 'Yearly'];
@@ -31,6 +32,7 @@ const SALARY_FORMATS = ['Monthly', 'Yearly'];
  * @returns {JSX.Element} Salary configuration screen
  */
 const Salary = ({ navigation }) => {
+  const { formData, updateFormData, getProgress, saveToFirestore } = useOnboarding();
   // State Management
   /** @state {string} salaryFormat - Selected salary format (Monthly/Yearly) */
   const [salaryFormat, setSalaryFormat] = useState('Monthly');
@@ -42,6 +44,7 @@ const Salary = ({ navigation }) => {
   const [minThreshold, setMinThreshold] = useState(0);
   /** @state {Object} errors - Form validation errors */
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   /**
    * Validates form and completes onboarding
@@ -51,7 +54,41 @@ const Salary = ({ navigation }) => {
    * 2. If valid, resets navigation stack and moves to SwipeJobs screen
    * 3. If invalid, displays appropriate error messages
    */
-  const handleFinish = () => {
+  const handleFinish = async () => {
+    if (!validateForm()) return;
+    
+    setLoading(true);
+    try {
+      // Update salary data in formData before saving
+      updateFormData('salary', {
+        format: salaryFormat,
+        range: {
+          min: Number(minSalary),
+          max: Number(maxSalary)
+        },
+        threshold: minThreshold
+      });
+      
+      await saveToFirestore();
+      // Navigate to SwipeJobs screen within JobSeekerStack
+      navigation.reset({
+        index: 0,
+        routes: [{ 
+          name: 'JobSeekerStack',
+          state: {
+            routes: [{ name: 'SwipeJobs' }]
+          }
+        }],
+      });
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      setErrors({ submit: 'Failed to save profile. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const validateForm = () => {
     const newErrors = {};
     if (!minSalary) newErrors.minSalary = 'Minimum salary is required';
     if (!maxSalary) newErrors.maxSalary = 'Maximum salary is required';
@@ -61,14 +98,10 @@ const Salary = ({ navigation }) => {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      return;
+      return false;
     }
 
-    // Navigate to SwipeJobs screen
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'SwipeJobs' }],
-    });
+    return true;
   };
 
   return (
@@ -139,13 +172,18 @@ const Salary = ({ navigation }) => {
             variant="outline"
             onPress={() => navigation.goBack()}
             style={styles.button}
+            disabled={loading}
           />
           <Button 
             title="Finish"
             onPress={handleFinish}
             style={styles.button}
+            loading={loading}
           />
         </View>
+        {errors.submit && (
+          <Text style={styles.errorText}>{errors.submit}</Text>
+        )}
       </View>
     </Container>
   );
@@ -234,6 +272,13 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     marginHorizontal: theme.spacing.xs,
+  },
+  errorText: {
+    color: theme.colors.accent.error,
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.sm,
+    marginTop: theme.spacing.md,
+    textAlign: 'center'
   },
 });
 

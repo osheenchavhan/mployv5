@@ -123,7 +123,7 @@ const BasicInfo = ({ navigation }) => {
   return (
     <Container>
       <ProgressBar 
-        progress={0.2}
+        progress={20}
         style={styles.progress}
       />
       

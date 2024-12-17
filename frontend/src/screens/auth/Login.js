@@ -50,6 +50,8 @@ import Button from '../../components/common/Button';
 import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../../services/firebase/auth';
 import { Alert } from 'react-native';
+import { getDoc, doc } from 'firebase/firestore';
+import { db } from '../../services/firebase/config';
 
 /**
  * @function Login
@@ -91,18 +93,22 @@ const Login = () => {
       const user = await loginUser(email, password);
       console.log('Login successful:', user);
       
-      // Navigate to EmployerStack first, which will then show EmployerType
-      navigation.reset({
-        index: 0,
-        routes: [{ 
-          name: 'EmployerStack',
-          state: {
-            routes: [
-              { name: 'EmployerType' }
-            ]
-          }
-        }],
-      });
+      // Get additional user data from Firestore
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      const userData = userDoc.data();
+      
+      // Check user type and navigate to appropriate stack
+      if (userData.userType === 'jobseeker') {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'JobSeekerStack' }],
+        });
+      } else {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'EmployerStack' }],
+        });
+      }
     } catch (error) {
       console.error('Login error:', error);
       Alert.alert('Login Failed', error.message || 'Please check your email and password');
@@ -147,15 +153,6 @@ const Login = () => {
                   required
                   containerStyle={styles.inputContainer}
                 />
-                {/* Temporarily remove forgot password until implemented
-                <Button
-                  title="Forgot Password?"
-                  variant="text"
-                  onPress={() => navigation.navigate('ForgotPassword')}
-                  style={styles.forgotButton}
-                  textStyle={styles.forgotButtonText}
-                />
-                */}
               </View>
 
               <Button
@@ -218,15 +215,6 @@ const styles = StyleSheet.create({
   },
   passwordContainer: {
     marginBottom: theme.spacing.md,
-  },
-  forgotButton: {
-    alignSelf: 'flex-end',
-    marginTop: theme.spacing.xs,
-    marginBottom: theme.spacing['2xl'],
-  },
-  forgotButtonText: {
-    color: theme.colors.primary.main,
-    fontWeight: theme.typography.fontWeight.medium,
   },
   loginButton: {
     width: '100%',

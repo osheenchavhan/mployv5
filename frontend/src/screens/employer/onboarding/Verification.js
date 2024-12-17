@@ -27,10 +27,13 @@
  * @lastModified 2024-12-10
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import DocumentPicker from 'expo-document-picker';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../../services/firebase/config';
+import { useUser } from '../../../context/UserContext';
 import Container from '../../../components/common/Container';
 import Button from '../../../components/common/Button';
 import { theme } from '../../../theme/theme';
@@ -45,8 +48,9 @@ import { VERIFICATION_CONSTANTS, ERROR_MESSAGES } from '../../../config/constant
  * @param {Object} props.navigation - React Navigation object for screen navigation
  * @returns {JSX.Element} Verification screen UI
  */
-const Verification = ({ navigation }) => {
-  const { formData } = useEmployerOnboarding();
+export default function Verification({ navigation }) {
+  const { user } = useUser();
+  const { formData, saveToFirestore } = useEmployerOnboarding();
   const [verificationStatus, setVerificationStatus] = useState({
     businessEmail: false,
     companyDocs: false,
@@ -55,7 +59,7 @@ const Verification = ({ navigation }) => {
   });
   const [selectedDocuments, setSelectedDocuments] = useState([]);
 
-  const { companyInfo, employerType } = formData;
+  const { companyInfo, employerType, locationPreferences } = formData;
   const isDirectEmployer = employerType.type === 'direct';
   const userEmail = "user@example.com"; // TODO: Get this from auth context
 
@@ -189,14 +193,20 @@ const Verification = ({ navigation }) => {
 
   /**
    * @function handleContinue
-   * @description Handles navigation to Dashboard after verification process
-   * @returns {void}
+   * @description Saves employer data to Firestore and navigates to Dashboard
+   * @returns {Promise<void>}
    */
-  const handleContinue = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Dashboard' }],
-    });
+  const handleContinue = async () => {
+    try {
+      await saveToFirestore();
+      navigation.navigate('Dashboard');
+    } catch (error) {
+      console.error('Error saving employer data:', error);
+      Alert.alert(
+        'Error',
+        'Failed to save your information. Please try again.'
+      );
+    }
   };
 
   return (
@@ -312,5 +322,3 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.xl,
   },
 });
-
-export default Verification;

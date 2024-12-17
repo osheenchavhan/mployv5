@@ -19,6 +19,8 @@
  */
 
 import React, { createContext, useContext, useState } from 'react';
+import { useUser } from './UserContext';
+import { saveEmployerData } from '../services/firebase/employer';
 
 /**
  * @context EmployerOnboardingContext
@@ -74,6 +76,7 @@ const EmployerOnboardingContext = createContext();
  * } = useEmployerOnboarding();
  */
 export const EmployerOnboardingProvider = ({ children }) => {
+  const { user } = useUser();
   const initialState = {
     employerType: {
       type: null, // 'direct' | 'agency'
@@ -141,6 +144,30 @@ export const EmployerOnboardingProvider = ({ children }) => {
     return formData.companyInfo.emailDomain.includes(websiteDomain);
   };
 
+  /**
+   * @function saveToFirestore
+   * @description Save all employer data to Firestore
+   * @throws {Error} When save fails or user is not authenticated
+   * @returns {Promise<void>}
+   */
+  const saveToFirestore = async () => {
+    if (!user?.uid) {
+      throw new Error('User not authenticated');
+    }
+
+    const dataToSave = {
+      employerType: formData.employerType,
+      companyInfo: formData.companyInfo,
+    };
+
+    // Only include location preferences for direct employers
+    if (formData.employerType.type === 'direct') {
+      dataToSave.locationPreferences = formData.locationPreferences;
+    }
+
+    await saveEmployerData(user.uid, dataToSave);
+  };
+
   const value = {
     formData,
     updateFormData,
@@ -149,6 +176,7 @@ export const EmployerOnboardingProvider = ({ children }) => {
     getProgress,
     isBusinessEmail,
     verifyEmailDomain,
+    saveToFirestore,
     steps: formData.employerType.type === 'direct' ? directEmployerSteps : agencySteps
   };
 
@@ -170,6 +198,7 @@ export const EmployerOnboardingProvider = ({ children }) => {
  *   - getProgress: Function to calculate completion progress
  *   - isBusinessEmail: Function to validate business email domains
  *   - verifyEmailDomain: Function to verify email domain matches website
+ *   - saveToFirestore: Function to save employer data to Firestore
  *   - steps: Array of steps based on employer type
  * 
  * @throws {Error} If used outside of EmployerOnboardingProvider
@@ -178,7 +207,8 @@ export const EmployerOnboardingProvider = ({ children }) => {
  * const {
  *   formData,
  *   updateFormData,
- *   verifyEmailDomain
+ *   verifyEmailDomain,
+ *   saveToFirestore
  * } = useEmployerOnboarding();
  * 
  * // Update company info
@@ -186,6 +216,9 @@ export const EmployerOnboardingProvider = ({ children }) => {
  * 
  * // Verify email domain
  * const isValid = verifyEmailDomain();
+ * 
+ * // Save employer data to Firestore
+ * saveToFirestore();
  */
 export const useEmployerOnboarding = () => {
   const context = useContext(EmployerOnboardingContext);

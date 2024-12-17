@@ -285,6 +285,7 @@ const PostJob = ({ jobId }) => {
           <Button
             onPress={() => handleSave('draft')}
             style={styles.draftButton}
+            textStyle={styles.draftButtonText}
             loading={loading}
           >
             Save as Draft
@@ -292,6 +293,7 @@ const PostJob = ({ jobId }) => {
           <Button
             onPress={() => handleSave('active')}
             style={styles.publishButton}
+            textStyle={styles.publishButtonText}
             loading={loading}
           >
             Publish Job
@@ -374,9 +376,16 @@ const styles = StyleSheet.create({
     marginRight: theme.spacing.xs,
     backgroundColor: theme.colors.neutral.background,
   },
+  draftButtonText: {
+    color: theme.colors.neutral.darkGrey,
+  },
   publishButton: {
     flex: 1,
     marginLeft: theme.spacing.xs,
+    backgroundColor: theme.colors.primary.main,
+  },
+  publishButtonText: {
+    color: theme.colors.neutral.white,
   },
   errorText: {
     fontSize: theme.typography.fontSize.sm,

@@ -28,7 +28,6 @@ import JobSeekerStack from './JobSeekerStack';
 import EmployerStack from './EmployerStack';
 import Login from '../screens/auth/Login';
 import Register from '../screens/auth/Register';
-import { EmployerOnboardingProvider } from '../context/EmployerOnboardingContext';
 
 /**
  * @constant Stack
@@ -81,46 +80,36 @@ const AppNavigator = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={['right', 'bottom', 'left']}>
-      <EmployerOnboardingProvider>
-        <Stack.Navigator 
-          screenOptions={{ 
-            headerShown: false,
-            cardStyle: { backgroundColor: 'white' },
-            animationEnabled: false // Temporarily disable animations
-          }}
-        >
-          {!user ? (
-            // Auth Stack
-            <>
-              <Stack.Screen 
-                name="Login" 
-                component={Login}
-                options={{ gestureEnabled: false }}
-              />
-              <Stack.Screen 
-                name="Register" 
-                component={Register}
-                options={{ gestureEnabled: false }}
-              />
-            </>
+      <Stack.Navigator 
+        screenOptions={{ 
+          headerShown: false,
+          cardStyle: { backgroundColor: 'white' },
+          animationEnabled: false // Temporarily disable animations
+        }}
+      >
+        {!user ? (
+          // Auth Stack
+          <>
+            <Stack.Screen 
+              name="Login" 
+              component={Login}
+              options={{ gestureEnabled: false }}
+            />
+            <Stack.Screen 
+              name="Register" 
+              component={Register}
+              options={{ gestureEnabled: false }}
+            />
+          </>
+        ) : (
+          // Main App Stack - Routes to appropriate stack based on user type
+          user.userType === 'employer' ? (
+            <Stack.Screen name="EmployerStack" component={EmployerStack} />
           ) : (
-            // App Stacks based on user type
-            user.userType === 'jobseeker' ? (
-              <Stack.Screen 
-                name="JobSeekerStack" 
-                component={JobSeekerStack}
-                options={{ gestureEnabled: false }}
-              />
-            ) : (
-              <Stack.Screen 
-                name="EmployerStack" 
-                component={EmployerStack}
-                options={{ gestureEnabled: false }}
-              />
-            )
-          )}
-        </Stack.Navigator>
-      </EmployerOnboardingProvider>
+            <Stack.Screen name="JobSeekerStack" component={JobSeekerStack} />
+          )
+        )}
+      </Stack.Navigator>
     </SafeAreaView>
   );
 };

@@ -68,9 +68,17 @@ export const UserProvider = ({ children }) => {
         // Get additional user data from Firestore
         const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
         if (userDoc.exists()) {
+          const userData = userDoc.data();
+          
+          // Check profile completion status
+          const profileComplete = userData.userType === 'jobseeker' 
+            ? Boolean(userData.basicInfo && userData.location && userData.education && userData.experience && userData.salary)
+            : Boolean(userData.companyInfo);
+          
           setUser({
             ...firebaseUser,
-            ...userDoc.data()
+            ...userData,
+            profileComplete
           });
         } else {
           setUser(firebaseUser);

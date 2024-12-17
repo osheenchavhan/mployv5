@@ -32,7 +32,8 @@ import Location from '../screens/jobseeker/onboarding/Location';
 import Education from '../screens/jobseeker/onboarding/Education';
 import Experience from '../screens/jobseeker/onboarding/Experience';
 import Salary from '../screens/jobseeker/onboarding/Salary';
-import { OnboardingProvider, useOnboarding } from '../context/OnboardingContext';
+import { OnboardingProvider } from '../context/OnboardingContext';
+import { useUser } from '../context/UserContext';
 
 /**
  * @constant Stack
@@ -80,9 +81,37 @@ const Stack = createStackNavigator();
  * }
  */
 const JobSeekerStack = () => {
+  const { user } = useUser();
+  
+  console.log('JobSeekerStack - Full user object:', JSON.stringify(user, null, 2));
+  
+  // Log individual fields
+  console.log('JobSeekerStack - Checking fields:', {
+    basicInfo: user?.jobSeeker?.basicInfo,
+    location: user?.jobSeeker?.location,
+    education: user?.jobSeeker?.education,
+    experience: user?.jobSeeker?.experience,
+    salary: user?.jobSeeker?.salary,
+    onboardingComplete: user?.onboardingComplete
+  });
+  
+  // Use onboardingComplete as the primary indicator
+  const isProfileComplete = user?.onboardingComplete === true;
+  
+  console.log('JobSeekerStack - isProfileComplete:', isProfileComplete);
+
   return (
     <OnboardingProvider>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator 
+        screenOptions={{ headerShown: false }}
+        initialRouteName={isProfileComplete ? "SwipeJobs" : "BasicInfo"}
+      >
+        {/* Main App Screens */}
+        <Stack.Screen name="SwipeJobs" component={SwipeJobs} />
+        <Stack.Screen name="Matches" component={Matches} />
+        <Stack.Screen name="JobDetail" component={JobDetail} />
+        <Stack.Screen name="Profile" component={Profile} />
+        
         {/* Onboarding Screens */}
         <Stack.Screen 
           name="BasicInfo" 
@@ -105,12 +134,6 @@ const JobSeekerStack = () => {
           name="Salary" 
           component={Salary}
         />
-        
-        {/* Main App Screens */}
-        <Stack.Screen name="SwipeJobs" component={SwipeJobs} />
-        <Stack.Screen name="Matches" component={Matches} />
-        <Stack.Screen name="JobDetail" component={JobDetail} />
-        <Stack.Screen name="Profile" component={Profile} />
       </Stack.Navigator>
     </OnboardingProvider>
   );

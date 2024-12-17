@@ -27,7 +27,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
  * @param {string} [props.error] - Error message to display
  * @param {string} [props.placeholder='Select date'] - Placeholder text when no date is selected
  * @param {Date} [props.maximumDate=new Date()] - Maximum selectable date (defaults to current date)
- * @param {Date} [props.minimumDate=new Date(1900, 0, 1)] - Minimum selectable date
+ * @param {Date} [props.minimumDate=new Date(1950, 0, 1)] - Minimum selectable date
  * @param {Object} [props.style] - Additional styles for the container
  * 
  * @example
@@ -64,7 +64,7 @@ const DatePicker = ({
   error,
   placeholder = 'Select date',
   maximumDate = new Date(),
-  minimumDate = new Date(1900, 0, 1),
+  minimumDate = new Date(1950, 0, 1),
   style
 }) => {
   const [show, setShow] = useState(false);

@@ -16,6 +16,9 @@
  */
 
 import React, { createContext, useContext, useState } from 'react';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../services/firebase/config';
+import { useUser } from './UserContext';
 
 /**
  * @context OnboardingContext
@@ -52,6 +55,7 @@ const OnboardingContext = createContext();
  * const { formData, updateFormData, currentStep } = useOnboarding();
  */
 export const OnboardingProvider = ({ children }) => {
+  const { user } = useUser();
   const initialFormData = {
     // Basic Info
     firstName: '',
@@ -73,6 +77,37 @@ export const OnboardingProvider = ({ children }) => {
   const [currentStep, setCurrentStep] = useState('BasicInfo');
   const steps = ['BasicInfo', 'Location', 'Education', 'Experience', 'Salary'];
 
+  const saveToFirestore = async () => {
+    if (!user?.uid) return;
+    
+    try {
+      const userRef = doc(db, 'users', user.uid);
+      await updateDoc(userRef, {
+        jobSeeker: {
+          basicInfo: {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            dateOfBirth: formData.dateOfBirth,
+            gender: formData.gender,
+            phoneNumber: formData.phoneNumber,
+          },
+          location: formData.location,
+          searchRadius: formData.searchRadius,
+          education: formData.education,
+          experience: formData.experience,
+          salary: formData.salary,
+        },
+        onboardingComplete: true,
+        profileComplete: true,
+        updatedAt: new Date().toISOString(),
+      });
+      console.log('Successfully saved jobseeker profile to Firestore');
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      throw error;
+    }
+  };
+
   const updateFormData = (field, value) => {
     setFormData(prev => ({
       ...prev,
@@ -91,7 +126,8 @@ export const OnboardingProvider = ({ children }) => {
     currentStep,
     setCurrentStep,
     getProgress,
-    steps
+    steps,
+    saveToFirestore
   };
 
   return (
@@ -111,6 +147,7 @@ export const OnboardingProvider = ({ children }) => {
  *   - setCurrentStep: Function to navigate between steps
  *   - getProgress: Function to calculate completion progress
  *   - steps: Array of available steps
+ *   - saveToFirestore: Function to save form data to Firestore
  * 
  * @throws {Error} If used outside of OnboardingProvider
  * 

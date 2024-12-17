@@ -126,7 +126,7 @@ const Select = ({
       <Modal
         visible={modalVisible}
         animationType="slide"
-        transparent={true}
+        //transparent={true}
       >
         <SafeAreaView style={styles.modalContainer}>
           <View style={styles.modalContent}>
