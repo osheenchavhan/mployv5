@@ -273,13 +273,13 @@ const LocationScreen = ({ navigation }) => {
   return (
     <Container>
       <ProgressBar 
-        progress={0.4}
+        progress={40}
         style={styles.progress}
       />
       
       <View style={styles.container}>
         <Text style={styles.title}>Location</Text>
-        <Text style={styles.subtitle}>Set your job search area</Text>
+        <Text style={styles.subtitle}>Set your job search area. We need this to show you jobs nearby.</Text>
         
         <View style={styles.mapContainer}>
           <MapView
@@ -333,7 +333,7 @@ const LocationScreen = ({ navigation }) => {
             value={radiusOptions.indexOf(searchRadius)}
             onValueChange={(value) => setSearchRadius(radiusOptions[value])}
             minimumTrackTintColor={theme.colors.primary.main}
-            maximumTrackTintColor={theme.colors.neutral.grey}
+            maximumTrackTintColor={theme.colors.neutral.lightGrey}
             thumbTintColor={theme.colors.primary.main}
           />
           <View style={styles.radiusMarkers}>

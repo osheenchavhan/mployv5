@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: theme.typography.fontSize.sm,
     fontFamily: theme.typography.fontFamily.medium,
-    color: theme.colors.neutral.black,
+    color: theme.colors.neutral.grey,
     marginBottom: theme.spacing.xs,
   },
   optionsContainer: {
@@ -152,8 +152,8 @@ const styles = StyleSheet.create({
     marginRight: theme.spacing.lg,
   },
   radioOuter: {
-    width: 20,
-    height: 20,
+    width: 16,
+    height: 16,
     borderRadius: theme.borderRadius.full,
     borderWidth: 2,
     borderColor: theme.colors.primary.main,
@@ -162,15 +162,15 @@ const styles = StyleSheet.create({
     marginRight: theme.spacing.sm,
   },
   radioInner: {
-    width: 12,
-    height: 12,
+    width: 8,
+    height: 8,
     borderRadius: theme.borderRadius.full,
     backgroundColor: theme.colors.primary.main,
   },
   optionLabel: {
     fontSize: theme.typography.fontSize.md,
     fontFamily: theme.typography.fontFamily.regular,
-    color: theme.colors.neutral.black,
+    color: theme.colors.neutral.darkGrey,
   },
   errorText: {
     fontSize: theme.typography.fontSize.sm,

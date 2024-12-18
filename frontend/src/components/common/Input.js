@@ -14,6 +14,7 @@ import {
   Platform,
 } from 'react-native';
 import { theme } from '../../theme/theme';
+import { Ionicons } from '@expo/vector-icons';
 
 /**
  * @component Input
@@ -38,6 +39,7 @@ import { theme } from '../../theme/theme';
  * @param {Object} [props.style] - Additional styles for container
  * @param {Object} [props.labelStyle] - Additional styles for label
  * @param {boolean} [props.required=false] - Whether to show required indicator
+ * @param {string} [props.variant] - Input variant (e.g. 'phone')
  * 
  * @example
  * // Basic text input
@@ -68,6 +70,17 @@ import { theme } from '../../theme/theme';
  *   error={emailError}
  *   touched={emailTouched}
  * />
+ * 
+ * // Phone input with Indian phone number prefix and validation
+ * <Input
+ *   label="Phone Number"
+ *   value={phoneNumber}
+ *   onChangeText={setPhoneNumber}
+ *   variant="phone"
+ *   error={phoneNumberError}
+ *   touched={phoneNumberTouched}
+ *   required
+ * />
  */
 const Input = ({
   label,
@@ -82,12 +95,37 @@ const Input = ({
   style,
   labelStyle,
   required = false,
+  variant,
 }) => {
   const [isSecureTextVisible, setIsSecureTextVisible] = useState(false);
 
   const toggleSecureText = () => {
     setIsSecureTextVisible(!isSecureTextVisible);
   };
+
+  const renderPhoneInput = () => (
+    <View style={[
+      styles.inputContainer,
+      error && touched && styles.inputError,
+    ]}>
+      <View style={styles.phonePrefix}>
+        <Text style={styles.countryCode}>+91</Text>
+      </View>
+      <TextInput
+        style={[styles.input, styles.phoneInput]}
+        value={value}
+        onChangeText={(text) => {
+          // Only allow numbers and limit to 10 digits
+          const formattedText = text.replace(/[^0-9]/g, '').slice(0, 10);
+          onChangeText(formattedText);
+        }}
+        placeholder={placeholder}
+        placeholderTextColor={theme.colors.neutral.gray}
+        keyboardType="phone-pad"
+        maxLength={10}
+      />
+    </View>
+  );
 
   return (
     <View style={[styles.container, style]}>
@@ -97,26 +135,34 @@ const Input = ({
           {required && <Text style={styles.required}> *</Text>}
         </Text>
       )}
-      <View style={[
-        styles.inputContainer,
-        touched && error && styles.errorInput,
-      ]}>
-        <TextInput
-          value={value}
-          onChangeText={onChangeText}
-          placeholder={placeholder}
-          placeholderTextColor={theme.colors.neutral.grey}
-          secureTextEntry={secureTextEntry && !isSecureTextVisible}
-          keyboardType={keyboardType}
-          autoCapitalize={autoCapitalize}
-          style={styles.input}
-        />
-        {secureTextEntry && (
-          <TouchableOpacity onPress={toggleSecureText} style={styles.eyeIcon}>
-            <Text>{isSecureTextVisible ? '👁️' : '👁️‍🗨️'}</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      {variant === 'phone' ? renderPhoneInput() : (
+        <View style={[
+          styles.inputContainer,
+          error && touched && styles.inputError,
+        ]}>
+          <TextInput
+            style={styles.input}
+            value={value}
+            onChangeText={onChangeText}
+            placeholder={placeholder}
+            placeholderTextColor={theme.colors.neutral.gray}
+            secureTextEntry={secureTextEntry && !isSecureTextVisible}
+            keyboardType={keyboardType}
+            autoCapitalize={autoCapitalize}
+          />
+          {secureTextEntry && (
+            <TouchableOpacity
+              onPress={toggleSecureText}
+            >
+              <Ionicons
+                name={isSecureTextVisible ? 'eye' : 'eye-off'}
+                size={24}
+                color={theme.colors.neutral.lightGrey}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
       {touched && error && (
         <Text style={styles.errorText}>{error}</Text>
       )}
@@ -151,6 +197,10 @@ const Input = ({
  * 5. Secure Text Entry:
  *    - Eye icon positioning
  *    - Touch target sizing
+ * 
+ * 6. Phone Input:
+ *    - Country code prefix styling
+ *    - Phone number input styling
  * 
  * Note: Uses theme for consistent styling across the app
  */
@@ -193,13 +243,29 @@ const styles = StyleSheet.create({
     padding: theme.spacing.sm,
     marginLeft: theme.spacing.xs,
   },
-  errorInput: {
+  inputError: {
     borderColor: theme.colors.accent.error,
   },
   errorText: {
     fontSize: theme.typography.fontSize.sm,
     color: theme.colors.accent.error,
     marginTop: theme.spacing.xs,
+  },
+  phonePrefix: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingRight: theme.spacing.sm,
+    borderRightWidth: 1,
+    borderRightColor: theme.colors.neutral.lightGrey,
+    marginRight: theme.spacing.sm,
+  },
+  countryCode: {
+    fontSize: theme.typography.fontSize.md,
+    color: theme.colors.neutral.darkGrey,
+    fontFamily: theme.typography.fontFamily.medium,
+  },
+  phoneInput: {
+    paddingLeft: 0,
   },
 });
 

@@ -105,7 +105,7 @@ const DatePicker = ({
         <Icon 
           name="calendar-today" 
           size={20} 
-          color={theme.colors.neutral.darkGrey} 
+          color={theme.colors.neutral.grey} 
         />
       </TouchableOpacity>
 
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: theme.typography.fontSize.sm,
     fontFamily: theme.typography.fontFamily.medium,
-    color: theme.colors.neutral.black,
+    color: theme.colors.neutral.grey,
     marginBottom: theme.spacing.xs,
   },
   dateButton: {
@@ -161,16 +161,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     borderWidth: 1,
-    borderColor: theme.colors.neutral.grey,
+    borderColor: theme.colors.neutral.lightGrey,
     borderRadius: theme.borderRadius.md,
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.sm,
-    backgroundColor: theme.colors.neutral.background,
+    backgroundColor: theme.colors.neutral.white,
+    height: theme.spacing['3xl'],
+    ...Platform.select({
+      ios: theme.shadows.sm,
+      android: {
+        elevation: theme.shadows.sm.elevation,
+      },
+    })
   },
   dateText: {
     fontSize: theme.typography.fontSize.md,
     fontFamily: theme.typography.fontFamily.regular,
-    color: theme.colors.neutral.black,
+    color: theme.colors.neutral.darkGrey,
   },
   placeholder: {
     color: theme.colors.neutral.grey,

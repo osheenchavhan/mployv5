@@ -69,35 +69,94 @@ const BasicInfo = ({ navigation }) => {
   const [errors, setErrors] = useState({});
 
   /**
-   * Validates the form data
+   * Validates the form data before submission
+   * Validation rules for First Name:
+   * - Required field
+   * - Must be 2-50 characters long
+   * - Can only contain letters and spaces
    * 
-   * Checks all required fields and format requirements:
-   * - First and last name must be provided
-   * - Date of birth must be selected
-   * - Gender must be selected
-   * - Phone number must be 10 digits
+   * Validation rules for Last Name:
+   * - Required field
+   * - Must be 2-50 characters long
+   * - Can only contain letters and spaces
+   * 
+   * Validation rules for Date of Birth:
+   * - Required field
+   * - User must be at least 18 years old
+   * - User must not be older than 100 years
+   * - Cannot be a future date
+   * 
+   * Validation rules for Gender:
+   * - Required field
+   * - Must be one of: male, female, or other
+   * 
+   * Validation rules for Phone Number:
+   * - Required field
+   * - Must be 10 digits
    * 
    * @function
    * @returns {boolean} True if form is valid, false otherwise
    */
   const validateForm = () => {
     const newErrors = {};
+    
+    // First Name validation
     if (!formData.firstName) {
       newErrors.firstName = 'First name is required';
+    } else if (formData.firstName.length < 2) {
+      newErrors.firstName = 'First name must be at least 2 characters';
+    } else if (formData.firstName.length > 50) {
+      newErrors.firstName = 'First name cannot exceed 50 characters';
+    } else if (!/^[a-zA-Z ]+$/.test(formData.firstName)) {
+      newErrors.firstName = 'First name can only contain letters and spaces';
     }
+
+    // Last Name validation
     if (!formData.lastName) {
       newErrors.lastName = 'Last name is required';
+    } else if (formData.lastName.length < 2) {
+      newErrors.lastName = 'Last name must be at least 2 characters';
+    } else if (formData.lastName.length > 50) {
+      newErrors.lastName = 'Last name cannot exceed 50 characters';
+    } else if (!/^[a-zA-Z ]+$/.test(formData.lastName)) {
+      newErrors.lastName = 'Last name can only contain letters and spaces';
     }
+
+    // Date of Birth validation
     if (!formData.dateOfBirth) {
       newErrors.dateOfBirth = 'Date of birth is required';
+    } else {
+      const today = new Date();
+      const birthDate = new Date(formData.dateOfBirth);
+      const age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      
+      // Adjust age if birthday hasn't occurred this year
+      const adjustedAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate()) 
+        ? age - 1 
+        : age;
+
+      if (birthDate > today) {
+        newErrors.dateOfBirth = 'Date of birth cannot be in the future';
+      } else if (adjustedAge < 18) {
+        newErrors.dateOfBirth = 'You must be at least 18 years old';
+      } else if (adjustedAge > 100) {
+        newErrors.dateOfBirth = 'Age cannot exceed 100 years';
+      }
     }
+
+    // Gender validation
     if (!formData.gender) {
       newErrors.gender = 'Gender is required';
+    } else if (!['male', 'female', 'other'].includes(formData.gender)) {
+      newErrors.gender = 'Please select a valid gender option';
     }
-    if (!formData.phone) {
-      newErrors.phone = 'Phone number is required';
-    } else if (!/^\d{10}$/.test(formData.phone)) {
-      newErrors.phone = 'Please enter a valid 10-digit phone number';
+
+    // Phone Number validation
+    if (!formData.phoneNumber) {
+      newErrors.phoneNumber = 'Phone number is required';
+    } else if (!/^[6-9]\d{9}$/.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = 'Please enter a valid Indian mobile number';
     }
 
     setErrors(newErrors);
@@ -142,6 +201,8 @@ const BasicInfo = ({ navigation }) => {
           }}
           placeholder="Enter your first name"
           error={errors.firstName}
+          touched={true}
+          required
           style={styles.input}
           labelStyle={styles.label}
         />
@@ -157,6 +218,8 @@ const BasicInfo = ({ navigation }) => {
           }}
           placeholder="Enter your last name"
           error={errors.lastName}
+          touched={true}
+          required
           style={styles.input}
           labelStyle={styles.label}
         />
@@ -171,9 +234,11 @@ const BasicInfo = ({ navigation }) => {
             }
           }}
           error={errors.dateOfBirth}
+          touched={true}
+          required
           style={styles.input}
           labelStyle={styles.label}
-          maximumDate={new Date()}
+          maximumDate={new Date()}  // Prevent future date selection
         />
 
         <RadioGroup
@@ -187,23 +252,27 @@ const BasicInfo = ({ navigation }) => {
             }
           }}
           error={errors.gender}
-          direction="horizontal"
+          direction='horizontal'
+          touched={true}
+          required
           style={styles.input}
+          labelStyle={styles.label}
         />
 
         <Input
           label="Phone Number"
-          value={formData.phone || ''}
+          value={formData.phoneNumber || ''}
           onChangeText={(value) => {
-            updateFormData('phone', value);
-            if (errors.phone) {
-              setErrors(prev => ({ ...prev, phone: '' }));
+            updateFormData('phoneNumber', value);
+            if (errors.phoneNumber) {
+              setErrors(prev => ({ ...prev, phoneNumber: '' }));
             }
           }}
           placeholder="Enter your phone number"
-          error={errors.phone}
-          keyboardType="phone-pad"
-          maxLength={10}
+          error={errors.phoneNumber}
+          touched={true}
+          required
+          variant="phone"
           style={styles.input}
           labelStyle={styles.label}
         />

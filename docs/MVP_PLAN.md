@@ -43,6 +43,12 @@ A geospatial-based job matching platform connecting job seekers with both direct
 1. **Progressive Onboarding** 
    - JobSeeker flow 
      - [x] Basic Info
+       - Form Validations:
+         - [x] Phone Number (Indian format)
+         - [x] First Name (Required, letters only, 2-50 chars)
+         - [x] Last Name (Required, letters only, 2-50 chars)
+         - [x] Date of Birth (Required, age 18-100 years, no future dates)
+         - [x] Gender (Required, must be one of: male/female/other)
      - [x] Location
      - [x] Education
      - [x] Experience

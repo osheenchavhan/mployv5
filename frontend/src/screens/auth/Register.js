@@ -83,7 +83,6 @@ const Register = () => {
   const navigation = useNavigation();
   const [formData, setFormData] = useState({
     userType: null,
-    fullName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -105,10 +104,6 @@ const Register = () => {
 
     if (!formData.userType) {
       newErrors.userType = 'Please select user type';
-    }
-
-    if (!formData.fullName) {
-      newErrors.fullName = 'Full name is required';
     }
 
     if (!formData.email) {
@@ -149,7 +144,6 @@ const Register = () => {
     try {
       const userData = {
         userType: formData.userType,
-        fullName: formData.fullName,
         email: formData.email,
         onboardingComplete: false,
       };
@@ -193,17 +187,6 @@ const Register = () => {
             {errors.userType && (
               <Text style={styles.errorText}>{errors.userType}</Text>
             )}
-
-            <Input
-              label="Full Name"
-              value={formData.fullName}
-              onChangeText={(text) => setFormData({ ...formData, fullName: text })}
-              placeholder="Enter your full name"
-              autoCapitalize="words"
-              error={errors.fullName}
-              touched={true}
-              required
-            />
 
             <Input
               label="Email"

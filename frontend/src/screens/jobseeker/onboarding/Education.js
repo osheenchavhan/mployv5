@@ -323,9 +323,8 @@ const EducationScreen = ({ navigation }) => {
    * @returns {React.ReactElement} Education card component
    */
   const renderEducationCard = (education, index) => (
-    <View key={index} style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.cardTitle}>Education {index + 1}</Text>
+    <View key={index} style={[styles.card, { zIndex: 3000 - (index * 10) }]}>
+      <View style={[styles.cardHeader, { justifyContent: 'flex-end' }]}>
         {educationList.length > 1 && (
           <TouchableOpacity onPress={() => removeEducation(index)}>
             <MaterialIcons name="delete" size={24} color={theme.colors.accent.error} />
@@ -333,7 +332,7 @@ const EducationScreen = ({ navigation }) => {
         )}
       </View>
 
-      <View style={styles.inputGroup}>
+      <View style={[styles.inputGroup, { zIndex: 3 }]}>
         <Text style={styles.label}>Degree</Text>
         <DropDownPicker
           open={openStates[index].degree}
@@ -368,14 +367,14 @@ const EducationScreen = ({ navigation }) => {
           dropDownContainerStyle={styles.dropdownList}
           placeholder="Select an option"
           listMode="SCROLLVIEW"
-          zIndex={3000 - (index * 3)}
+          zIndex={3}
         />
         {errors[`${index}-degree`] && (
           <Text style={styles.errorText}>{errors[`${index}-degree`]}</Text>
         )}
       </View>
 
-      <View style={[styles.inputGroup, { marginTop: theme.spacing.lg }]}>
+      <View style={[styles.inputGroup, { marginTop: theme.spacing.lg, zIndex: 2 }]}>
         <Text style={styles.label}>Specialization</Text>
         <DropDownPicker
           open={openStates[index].specialization}
@@ -401,14 +400,14 @@ const EducationScreen = ({ navigation }) => {
           dropDownContainerStyle={styles.dropdownList}
           placeholder="Select an option"
           listMode="SCROLLVIEW"
-          zIndex={2000 - (index * 3)}
+          zIndex={2}
         />
         {errors[`${index}-specialization`] && (
           <Text style={styles.errorText}>{errors[`${index}-specialization`]}</Text>
         )}
       </View>
 
-      <View style={[styles.inputGroup, { marginTop: theme.spacing.lg }]}>
+      <View style={[styles.inputGroup, { marginTop: theme.spacing.lg, zIndex: 1 }]}>
         <Text style={styles.label}>College Name</Text>
         <DropDownPicker
           open={openStates[index].institution}
@@ -427,7 +426,7 @@ const EducationScreen = ({ navigation }) => {
           placeholder="Select your institution"
           searchable={true}
           listMode="SCROLLVIEW"
-          zIndex={1000 - (index * 3)}
+          zIndex={1}
         />
         {errors[`${index}-institution`] && (
           <Text style={styles.errorText}>{errors[`${index}-institution`]}</Text>
@@ -437,7 +436,7 @@ const EducationScreen = ({ navigation }) => {
       <View style={[styles.inputGroup, { marginTop: theme.spacing.lg }]}>
         <Text style={styles.label}>Completion Date (or expected)</Text>
         <View style={styles.dateContainer}>
-          <View style={styles.monthPicker}>
+          <View style={[styles.monthPicker, { zIndex: 0 }]}>
             <DropDownPicker
               open={openStates[index].month}
               value={education.completionDate.month}
@@ -447,35 +446,47 @@ const EducationScreen = ({ navigation }) => {
               }))}
               setOpen={(value) => handleOpenStateChange(index, 'month', value)}
               setValue={(callback) => {
-                const value = callback(education.completionDate.month);
-                handleEducationChange(index, 'completionDate', {
-                  ...education.completionDate,
-                  month: value
-                });
+                if (typeof callback === 'function') {
+                  const newValue = callback(education.completionDate.month);
+                  handleEducationChange(index, 'completionDate', {
+                    ...education.completionDate,
+                    month: newValue
+                  });
+                } else {
+                  handleEducationChange(index, 'completionDate', {
+                    ...education.completionDate,
+                    month: callback
+                  });
+                }
               }}
-              style={[styles.dropdown, { flex: 1 }]}
+              style={styles.dropdown}
               dropDownContainerStyle={styles.dropdownList}
               placeholder="Month"
               listMode="SCROLLVIEW"
-              zIndex={500 - (index * 3)}
+              zIndex={0}
+              dropDownDirection="BOTTOM"
             />
           </View>
           <View style={styles.yearInput}>
             <Input
-              value={education.completionDate.year ? education.completionDate.year.toString() : ''}
-              onChangeText={(text) => {
+              value={education.completionDate.year}
+              onChangeText={(value) => {
                 handleEducationChange(index, 'completionDate', {
                   ...education.completionDate,
-                  year: text ? parseInt(text) : null
+                  year: value
                 });
               }}
               placeholder="YYYY"
               keyboardType="numeric"
               maxLength={4}
-              error={errors[`${index}-year`]}
             />
           </View>
         </View>
+        {(errors[`${index}-month`] || errors[`${index}-year`]) && (
+          <Text style={styles.errorText}>
+            {errors[`${index}-month`] || errors[`${index}-year`]}
+          </Text>
+        )}
       </View>
     </View>
   );
@@ -561,12 +572,12 @@ const EducationScreen = ({ navigation }) => {
   return (
     <Container>
       <ProgressBar 
-        progress={0.6}
+        progress={60}
         style={styles.progress}
       />
       
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>Education Details</Text>
+        <Text style={styles.title}>Education</Text>
         <Text style={styles.subtitle}>Tell us about your education</Text>
         
         {renderCurrentlyPursuing()}
@@ -577,7 +588,7 @@ const EducationScreen = ({ navigation }) => {
         {educationLevel === 'Post Graduate' && educationList.length < 2 && (
           <TouchableOpacity onPress={addEducation} style={styles.addButton}>
             <MaterialIcons name="add-circle" size={24} color={theme.colors.primary.main} />
-            <Text style={styles.addButtonText}>Add Another Education</Text>
+            <Text style={styles.addButtonText}>Add Another Degree</Text>
           </TouchableOpacity>
         )}
 
@@ -628,17 +639,17 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.xl,
   },
   sectionTitle: {
-    fontSize: theme.typography.fontSize.lg,
+    fontSize: theme.typography.fontSize.md,
     fontWeight: '600',
-    color: theme.colors.neutral.black,
+    color: theme.colors.neutral.darkGrey,
     marginBottom: theme.spacing.md,
   },
   toggleContainer: {
     flexDirection: 'row',
-    gap: theme.spacing.md,
+    gap: theme.spacing.sm,
   },
   toggleButton: {
-    paddingVertical: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
     paddingHorizontal: theme.spacing.lg,
     borderRadius: theme.borderRadius.full,
     borderWidth: 1,
@@ -650,7 +661,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.primary.main,
   },
   toggleButtonText: {
-    fontSize: theme.typography.fontSize.md,
+    fontSize: theme.typography.fontSize.sm,
     color: theme.colors.neutral.grey,
   },
   toggleButtonTextSelected: {
@@ -665,7 +676,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing.sm,
   },
   pill: {
-    paddingVertical: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
     paddingHorizontal: theme.spacing.lg,
     borderRadius: theme.borderRadius.full,
     borderWidth: 1,
@@ -677,7 +688,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.primary.main,
   },
   pillText: {
-    fontSize: theme.typography.fontSize.md,
+    fontSize: theme.typography.fontSize.sm,
     color: theme.colors.neutral.grey,
   },
   pillTextSelected: {
@@ -716,8 +727,8 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.md,
   },
   label: {
-    fontSize: theme.typography.fontSize.md,
-    color: theme.colors.neutral.black,
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.neutral.grey,
     marginBottom: theme.spacing.xs,
   },
   dateContainer: {
@@ -738,10 +749,12 @@ const styles = StyleSheet.create({
     padding: theme.spacing.lg,
     marginBottom: theme.spacing.lg,
     ...theme.shadows.md,
+    position: 'relative',
+    overflow: 'visible'
   },
   cardHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     marginBottom: theme.spacing.md,
   },
