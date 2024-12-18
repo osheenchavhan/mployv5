@@ -10,10 +10,15 @@
  * - Interactive slider for minimum salary threshold
  * - Input validation for salary range
  * - Navigation to job swiping screen upon completion
+ * 
+ * Database Storage:
+ * - All salary values are stored in yearly format for consistency
+ * - Monthly values are converted to yearly (x12) before saving
+ * - Display values are converted based on user's selected format
  */
 
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import Container from '../../../components/common/Container';
 import Button from '../../../components/common/Button';
 import Input from '../../../components/common/Input';
@@ -25,6 +30,46 @@ import { useOnboarding } from '../../../context/OnboardingContext';
 /** @constant {string[]} SALARY_FORMATS - Available salary format options */
 const SALARY_FORMATS = ['Monthly', 'Yearly'];
 
+/** @constant {Object} THRESHOLD_STEPS - Predefined steps for salary threshold */
+const THRESHOLD_STEPS = {
+  Monthly: [
+    { value: 10000, label: '₹10k' },
+    { value: 15000, label: '₹15k' },
+    { value: 20000, label: '₹20k' },
+    { value: 25000, label: '₹25k' },
+    { value: 30000, label: '₹30k' },
+    { value: 40000, label: '₹40k' },
+    { value: 50000, label: '₹50k' },
+    { value: 75000, label: '₹75k' },
+    { value: 100000, label: '₹1L' }
+  ],
+  Yearly: [
+    { value: 120000, label: '₹1.2L' },
+    { value: 180000, label: '₹1.8L' },
+    { value: 240000, label: '₹2.4L' },
+    { value: 300000, label: '₹3L' },
+    { value: 360000, label: '₹3.6L' },
+    { value: 480000, label: '₹4.8L' },
+    { value: 600000, label: '₹6L' },
+    { value: 900000, label: '₹9L' },
+    { value: 1200000, label: '₹12L' }
+  ]
+};
+
+/**
+ * Converts salary between monthly and yearly formats
+ * @function convertSalary
+ * @param {number} value - Salary value to convert
+ * @param {string} fromFormat - Current format ('Monthly' or 'Yearly')
+ * @param {string} toFormat - Target format ('Monthly' or 'Yearly')
+ * @returns {number} Converted salary value
+ */
+const convertSalary = (value, fromFormat, toFormat) => {
+  if (!value) return value;
+  if (fromFormat === toFormat) return value;
+  return fromFormat === 'Monthly' ? value * 12 : Math.round(value / 12);
+};
+
 /**
  * Salary Screen Component
  * @param {Object} props - Component props
@@ -32,56 +77,95 @@ const SALARY_FORMATS = ['Monthly', 'Yearly'];
  * @returns {JSX.Element} Salary configuration screen
  */
 const Salary = ({ navigation }) => {
-  const { formData, updateFormData, getProgress, saveToFirestore } = useOnboarding();
+  const { formData, updateFormData, saveToFirestore } = useOnboarding();
+  
   // State Management
-  /** @state {string} salaryFormat - Selected salary format (Monthly/Yearly) */
   const [salaryFormat, setSalaryFormat] = useState('Monthly');
-  /** @state {string} minSalary - Minimum expected salary */
   const [minSalary, setMinSalary] = useState('');
-  /** @state {string} maxSalary - Maximum expected salary */
   const [maxSalary, setMaxSalary] = useState('');
-  /** @state {number} minThreshold - Minimum salary threshold for job visibility */
-  const [minThreshold, setMinThreshold] = useState(0);
-  /** @state {Object} errors - Form validation errors */
+  const [minThreshold, setMinThreshold] = useState(THRESHOLD_STEPS.Monthly[0].value);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [currentThresholdSteps, setCurrentThresholdSteps] = useState(THRESHOLD_STEPS.Monthly);
 
-  /**
-   * Validates form and completes onboarding
-   * @function handleFinish
-   * @description
-   * 1. Validates required fields and salary range logic
-   * 2. If valid, resets navigation stack and moves to SwipeJobs screen
-   * 3. If invalid, displays appropriate error messages
-   */
+  // Update threshold steps when salary format changes
+  useEffect(() => {
+    const newSteps = THRESHOLD_STEPS[salaryFormat];
+    setCurrentThresholdSteps(newSteps);
+    // Convert threshold value to new format
+    const convertedThreshold = convertSalary(
+      minThreshold,
+      salaryFormat === 'Monthly' ? 'Yearly' : 'Monthly',
+      salaryFormat
+    );
+    setMinThreshold(convertedThreshold);
+  }, [salaryFormat]);
+
+  // Update minSalary if it's less than threshold
+  useEffect(() => {
+    if (minThreshold && minSalary && Number(minSalary) < minThreshold) {
+      setMinSalary(minThreshold.toString());
+    }
+  }, [minThreshold]);
+
+  const handleFormatChange = (newFormat) => {
+    if (newFormat === salaryFormat) return;
+
+    // Convert existing salary values to new format
+    if (minSalary) {
+      setMinSalary(convertSalary(Number(minSalary), salaryFormat, newFormat).toString());
+    }
+    if (maxSalary) {
+      setMaxSalary(convertSalary(Number(maxSalary), salaryFormat, newFormat).toString());
+    }
+
+    setSalaryFormat(newFormat);
+  };
+
   const handleFinish = async () => {
     if (!validateForm()) return;
     
     setLoading(true);
     try {
-      // Update salary data in formData before saving
-      updateFormData('salary', {
+      // Convert all values to yearly format for storage
+      const yearlyMinSalary = convertSalary(Number(minSalary), salaryFormat, 'Yearly');
+      const yearlyMaxSalary = convertSalary(Number(maxSalary), salaryFormat, 'Yearly');
+      const yearlyThreshold = convertSalary(minThreshold, salaryFormat, 'Yearly');
+
+      const salaryData = {
         format: salaryFormat,
         range: {
-          min: Number(minSalary),
-          max: Number(maxSalary)
+          min: yearlyMinSalary,
+          max: yearlyMaxSalary
         },
-        threshold: minThreshold
-      });
+        threshold: yearlyThreshold
+      };
+
+      console.log('Saving salary data:', salaryData);
+
+      // Update salary data in formData before saving
+      updateFormData('salary', salaryData);
       
+      // Save to Firestore and wait for completion
       await saveToFirestore();
-      // Navigate to SwipeJobs screen within JobSeekerStack
-      navigation.reset({
-        index: 0,
-        routes: [{ 
-          name: 'JobSeekerStack',
-          state: {
-            routes: [{ name: 'SwipeJobs' }]
-          }
-        }],
-      });
+
+      console.log('Successfully saved all data, navigating to SwipeJobs');
+
+      // Add a small delay to ensure Firestore update is complete
+      setTimeout(() => {
+        // Reset navigation stack and navigate to SwipeJobs
+        navigation.reset({
+          index: 0,
+          routes: [{ 
+            name: 'JobSeekerStack',
+            state: {
+              routes: [{ name: 'SwipeJobs' }]
+            }
+          }],
+        });
+      }, 500);
     } catch (error) {
-      console.error('Error saving profile:', error);
+      console.error('Error in handleFinish:', error);
       setErrors({ submit: 'Failed to save profile. Please try again.' });
     } finally {
       setLoading(false);
@@ -90,9 +174,15 @@ const Salary = ({ navigation }) => {
 
   const validateForm = () => {
     const newErrors = {};
+    const min = Number(minSalary);
+    const max = Number(maxSalary);
+
     if (!minSalary) newErrors.minSalary = 'Minimum salary is required';
     if (!maxSalary) newErrors.maxSalary = 'Maximum salary is required';
-    if (Number(minSalary) > Number(maxSalary)) {
+    if (min < minThreshold) {
+      newErrors.minSalary = `Minimum salary cannot be less than threshold (${minThreshold})`;
+    }
+    if (min > max) {
       newErrors.maxSalary = 'Maximum salary should be greater than minimum salary';
     }
 
@@ -104,6 +194,14 @@ const Salary = ({ navigation }) => {
     return true;
   };
 
+  const formatSalaryDisplay = (value) => {
+    if (!value) return '';
+    if (value >= 100000) {
+      return `₹${(value / 100000).toFixed(1)}L`;
+    }
+    return `₹${(value / 1000).toFixed(0)}k`;
+  };
+
   return (
     <Container>
       <View style={styles.container}>
@@ -111,15 +209,23 @@ const Salary = ({ navigation }) => {
         <Text style={styles.subtitle}>What are your salary expectations?</Text>
         
         <Text style={styles.label}>Salary Format</Text>
-        <View style={styles.formatContainer}>
+        <View style={styles.toggleContainer}>
           {SALARY_FORMATS.map((format) => (
-            <Chip
+            <TouchableOpacity
               key={format}
-              label={format}
-              variant="choice"
-              selected={salaryFormat === format}
-              onPress={() => setSalaryFormat(format)}
-            />
+              style={[
+                styles.toggleButton,
+                salaryFormat === format && styles.toggleButtonSelected
+              ]}
+              onPress={() => handleFormatChange(format)}
+            >
+              <Text style={[
+                styles.toggleButtonText,
+                salaryFormat === format && styles.toggleButtonTextSelected
+              ]}>
+                {format}
+              </Text>
+            </TouchableOpacity>
           ))}
         </View>
 
@@ -155,16 +261,30 @@ const Salary = ({ navigation }) => {
         <Slider
           style={styles.slider}
           minimumValue={0}
-          maximumValue={Number(maxSalary) || 100000}
-          value={minThreshold}
-          onValueChange={setMinThreshold}
+          maximumValue={currentThresholdSteps.length - 1}
+          step={1}
+          value={currentThresholdSteps.findIndex(step => step.value === minThreshold)}
+          onValueChange={(index) => {
+            const newThreshold = currentThresholdSteps[index].value;
+            setMinThreshold(newThreshold);
+          }}
           minimumTrackTintColor={theme.colors.primary.main}
           maximumTrackTintColor={theme.colors.neutral.lightGrey}
           thumbTintColor={theme.colors.primary.main}
         />
-        <Text style={styles.thresholdValue}>
-          ₹{minThreshold.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-        </Text>
+        <View style={styles.thresholdLabelsContainer}>
+          {currentThresholdSteps.map((step, index) => (
+            <Text
+              key={index}
+              style={[
+                styles.thresholdLabel,
+                minThreshold === step.value && styles.thresholdLabelSelected
+              ]}
+            >
+              {step.label}
+            </Text>
+          ))}
+        </View>
 
         <View style={styles.buttonContainer}>
           <Button 
@@ -225,9 +345,29 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.xs,
     color: theme.colors.neutral.black,
   },
-  formatContainer: {
+  toggleContainer: {
     flexDirection: 'row',
+    gap: theme.spacing.sm,
     marginBottom: theme.spacing.lg,
+  },
+  toggleButton: {
+    paddingVertical: theme.spacing.xs,
+    paddingHorizontal: theme.spacing.lg,
+    borderRadius: theme.borderRadius.full,
+    borderWidth: 1,
+    borderColor: theme.colors.neutral.lightGrey,
+    backgroundColor: theme.colors.neutral.white,
+  },
+  toggleButtonSelected: {
+    backgroundColor: theme.colors.primary.main,
+    borderColor: theme.colors.primary.main,
+  },
+  toggleButtonText: {
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.neutral.grey,
+  },
+  toggleButtonTextSelected: {
+    color: theme.colors.neutral.white,
   },
   rangeContainer: {
     flexDirection: 'row',
@@ -258,11 +398,19 @@ const styles = StyleSheet.create({
     color: theme.colors.neutral.darkGrey,
     marginBottom: theme.spacing.sm,
   },
-  thresholdValue: {
-    fontSize: theme.typography.fontSize.md,
-    color: theme.colors.primary.main,
-    textAlign: 'center',
+  thresholdLabelsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: theme.spacing.lg,
+  },
+  thresholdLabel: {
+    fontSize: theme.typography.fontSize.xs,
+    color: theme.colors.neutral.darkGrey,
+    transform: [{ rotate: '-45deg' }],
+  },
+  thresholdLabelSelected: {
+    color: theme.colors.primary.main,
+    fontWeight: '600',
   },
   buttonContainer: {
     flexDirection: 'row',

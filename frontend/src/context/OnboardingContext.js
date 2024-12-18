@@ -16,7 +16,7 @@
  */
 
 import React, { createContext, useContext, useState } from 'react';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from '../services/firebase/config';
 import { useUser } from './UserContext';
 
@@ -78,30 +78,56 @@ export const OnboardingProvider = ({ children }) => {
   const steps = ['BasicInfo', 'Location', 'Education', 'Experience', 'Salary'];
 
   const saveToFirestore = async () => {
-    if (!user?.uid) return;
+    if (!user?.uid) {
+      console.error('No user ID available for saving to Firestore');
+      return;
+    }
     
     try {
-      const userRef = doc(db, 'users', user.uid);
-      await updateDoc(userRef, {
-        jobSeeker: {
-          basicInfo: {
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            dateOfBirth: formData.dateOfBirth,
-            gender: formData.gender,
-            phoneNumber: formData.phoneNumber,
-          },
-          location: formData.location,
-          searchRadius: formData.searchRadius,
-          education: formData.education,
-          experience: formData.experience,
-          salary: formData.salary,
+      console.log('Current formData before save:', formData);
+      
+      // Create the data object to save
+      const dataToSave = {
+        basicInfo: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          dateOfBirth: formData.dateOfBirth,
+          gender: formData.gender,
+          phoneNumber: formData.phoneNumber,
         },
+        location: formData.location,
+        searchRadius: formData.searchRadius,
+        education: formData.education,
+        experience: formData.experience,
+        salary: formData.salary,
         onboardingComplete: true,
         profileComplete: true,
+        userType: 'jobseeker',
         updatedAt: new Date().toISOString(),
-      });
+      };
+
+      console.log('Data being saved to Firestore:', dataToSave);
+      
+      const userRef = doc(db, 'users', user.uid);
+      await updateDoc(userRef, dataToSave);
+      
       console.log('Successfully saved jobseeker profile to Firestore');
+      
+      // Verify the save by reading back the data
+      const savedDoc = await getDoc(userRef);
+      const savedData = savedDoc.data();
+      console.log('Verified saved data:', savedData);
+
+      // Update the user context with the new data
+      if (user.setUser) {
+        user.setUser({
+          ...user,
+          ...savedData,
+          profileComplete: true,
+          onboardingComplete: true
+        });
+      }
+      
     } catch (error) {
       console.error('Error saving profile:', error);
       throw error;
@@ -109,10 +135,34 @@ export const OnboardingProvider = ({ children }) => {
   };
 
   const updateFormData = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    console.log('Updating form data:', { field, value });
+    
+    // Handle experience data specially
+    if (typeof field === 'object' && value === 'Salary') {
+      setFormData(prev => {
+        const updated = {
+          ...prev,
+          experience: field
+        };
+        console.log('Updated formData with experience:', updated);
+        return updated;
+      });
+      return;
+    }
+
+    // Handle salary data
+    if (field === 'salary') {
+      console.log('Setting salary data:', value);
+    }
+
+    setFormData(prev => {
+      const updated = {
+        ...prev,
+        [field]: value
+      };
+      console.log('Updated formData:', updated);
+      return updated;
+    });
   };
 
   const getProgress = () => {

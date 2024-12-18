@@ -62,28 +62,67 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const updateUser = async (firebaseUser) => {
+    try {
+      // Get additional user data from Firestore
+      const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+      console.log('Fetched user data from Firestore:', userDoc.data());
+      
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        
+        // Check profile completion status
+        const isJobSeeker = userData.userType === 'jobseeker';
+        console.log('User type:', userData.userType);
+        console.log('Checking fields:', {
+          basicInfo: userData.basicInfo,
+          education: userData.education,
+          experience: userData.experience,
+          location: userData.location,
+          salary: userData.salary,
+          onboardingComplete: userData.onboardingComplete
+        });
+
+        const profileComplete = isJobSeeker
+          ? Boolean(
+              userData.basicInfo &&
+              userData.location &&
+              userData.education &&
+              userData.experience &&
+              userData.salary &&
+              userData.onboardingComplete
+            )
+          : Boolean(userData.companyInfo);
+
+        console.log('Profile completion status:', profileComplete);
+        
+        const updatedUser = {
+          ...firebaseUser,
+          ...userData,
+          profileComplete,
+          setUser // Add setUser function to user object
+        };
+        
+        setUser(updatedUser);
+        return updatedUser;
+      } else {
+        console.log('No user document found in Firestore');
+        setUser(firebaseUser);
+        return firebaseUser;
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      setUser(firebaseUser);
+      return firebaseUser;
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        // Get additional user data from Firestore
-        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          
-          // Check profile completion status
-          const profileComplete = userData.userType === 'jobseeker' 
-            ? Boolean(userData.basicInfo && userData.location && userData.education && userData.experience && userData.salary)
-            : Boolean(userData.companyInfo);
-          
-          setUser({
-            ...firebaseUser,
-            ...userData,
-            profileComplete
-          });
-        } else {
-          setUser(firebaseUser);
-        }
+        await updateUser(firebaseUser);
       } else {
+        console.log('No Firebase user');
         setUser(null);
       }
       setLoading(false);
@@ -95,7 +134,13 @@ export const UserProvider = ({ children }) => {
   const value = {
     user,
     loading,
-    setUser,
+    setUser: async (newUserData) => {
+      if (newUserData && newUserData.uid) {
+        await updateUser(newUserData);
+      } else {
+        setUser(newUserData);
+      }
+    },
   };
 
   return (
