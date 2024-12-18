@@ -32,6 +32,7 @@ import Location from '../screens/jobseeker/onboarding/Location';
 import Education from '../screens/jobseeker/onboarding/Education';
 import Experience from '../screens/jobseeker/onboarding/Experience';
 import Salary from '../screens/jobseeker/onboarding/Salary';
+import JobSeekerTabs from './JobSeekerTabs';
 import { OnboardingProvider } from '../context/OnboardingContext';
 import { useUser } from '../context/UserContext';
 
@@ -104,36 +105,40 @@ const JobSeekerStack = () => {
     <OnboardingProvider>
       <Stack.Navigator 
         screenOptions={{ headerShown: false }}
-        initialRouteName={isProfileComplete ? "SwipeJobs" : "BasicInfo"}
+        initialRouteName={isProfileComplete ? "MainTabs" : "BasicInfo"}
       >
-        {/* Main App Screens */}
-        <Stack.Screen name="SwipeJobs" component={SwipeJobs} />
-        <Stack.Screen name="Matches" component={Matches} />
-        <Stack.Screen name="JobDetail" component={JobDetail} />
-        <Stack.Screen name="Profile" component={Profile} />
-        
-        {/* Onboarding Screens */}
-        <Stack.Screen 
-          name="BasicInfo" 
-          component={BasicInfo}
-          options={{ gestureEnabled: false }}
-        />
-        <Stack.Screen 
-          name="Location" 
-          component={Location}
-        />
-        <Stack.Screen 
-          name="Education" 
-          component={Education}
-        />
-        <Stack.Screen 
-          name="Experience" 
-          component={Experience}
-        />
-        <Stack.Screen 
-          name="Salary" 
-          component={Salary}
-        />
+        {!isProfileComplete ? (
+          // Onboarding screens
+          <>
+            <Stack.Screen 
+              name="BasicInfo" 
+              component={BasicInfo}
+              options={{ gestureEnabled: false }}
+            />
+            <Stack.Screen 
+              name="Location" 
+              component={Location}
+            />
+            <Stack.Screen 
+              name="Education" 
+              component={Education}
+            />
+            <Stack.Screen 
+              name="Experience" 
+              component={Experience}
+            />
+            <Stack.Screen 
+              name="Salary" 
+              component={Salary}
+            />
+          </>
+        ) : (
+          // Main app screens with bottom tabs
+          <>
+            <Stack.Screen name="MainTabs" component={JobSeekerTabs} />
+            <Stack.Screen name="JobDetail" component={JobDetail} />
+          </>
+        )}
       </Stack.Navigator>
     </OnboardingProvider>
   );
