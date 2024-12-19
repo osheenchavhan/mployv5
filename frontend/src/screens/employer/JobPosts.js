@@ -90,14 +90,23 @@ const JobStatusBadge = ({ status }) => {
  */
 const JobCard = ({ job }) => {
   const navigation = useNavigation();
+  const { user } = useUser();
+  const isAgency = user?.employerType === 'agency';
 
   return (
     <TouchableOpacity 
-      style={styles.jobCard}
+      style={styles.card}
       onPress={() => navigation.navigate('PostJob', { jobId: job.id })}
     >
       <View style={styles.jobHeader}>
-        <Text style={styles.jobTitle}>{job.title}</Text>
+        <View style={styles.jobTitleContainer}>
+          <Text style={styles.jobTitle}>{job.title}</Text>
+          {isAgency && job.company?.name && (
+            <Text style={styles.companyName}>
+              {job.company.name}
+            </Text>
+          )}
+        </View>
         <JobStatusBadge status={job.status} />
       </View>
       
@@ -156,36 +165,64 @@ const JobPosts = () => {
 
   return (
     <Container>
-      <ScrollView style={styles.container}>
-        <View style={styles.header}>
+      <ScrollView 
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.content}>
           <Text style={styles.title}>Job Posts</Text>
-          <Button
-            onPress={() => navigation.navigate('PostJob')}
-            style={styles.createButton}
-          >
-            Create New
-          </Button>
-        </View>
+          <Text style={styles.subtitle}>
+            Manage and track all your job listings
+          </Text>
 
-        {loading ? (
-          <ActivityIndicator size="large" color={theme.colors.primary} />
-        ) : error ? (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{error}</Text>
-            <Button onPress={loadJobs} style={styles.retryButton}>
-              Retry
-            </Button>
+          <View style={styles.headerActions}>
+            <TouchableOpacity
+              style={styles.createButton}
+              onPress={() => navigation.navigate('PostJob')}
+            >
+              <Text style={styles.createButtonText}>Create New</Text>
+            </TouchableOpacity>
           </View>
-        ) : jobs.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No jobs posted yet</Text>
-            <Text style={styles.emptySubText}>
-              Create your first job posting to start finding candidates
-            </Text>
-          </View>
-        ) : (
-          jobs.map((job) => <JobCard key={job.id} job={job} />)
-        )}
+
+          {loading ? (
+            <View style={styles.centerContainer}>
+              <ActivityIndicator size="large" color={theme.colors.primary.main} />
+            </View>
+          ) : error ? (
+            <View style={styles.card}>
+              <View style={styles.centerContainer}>
+                <Text style={styles.errorText}>{error}</Text>
+                <TouchableOpacity
+                  style={[styles.button, styles.retryButton]}
+                  onPress={loadJobs}
+                >
+                  <Text style={styles.buttonText}>Retry</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : jobs.length === 0 ? (
+            <View style={styles.card}>
+              <View style={styles.centerContainer}>
+                <Text style={styles.emptyText}>No jobs posted yet</Text>
+                <Text style={styles.emptySubText}>
+                  Create your first job posting to start finding candidates
+                </Text>
+                <TouchableOpacity
+                  style={[styles.button, styles.createFirstButton]}
+                  onPress={() => navigation.navigate('PostJob')}
+                >
+                  <Text style={styles.buttonText}>Create First Job</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : (
+            <View style={styles.jobsList}>
+              {jobs.map((job) => (
+                <JobCard key={job.id} job={job} />
+              ))}
+            </View>
+          )}
+        </View>
       </ScrollView>
     </Container>
   );
@@ -194,29 +231,43 @@ const JobPosts = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.neutral.white,
+  },
+  content: {
     padding: theme.spacing.lg,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: theme.spacing.xl,
-  },
   title: {
-    fontFamily: theme.typography.fontFamily.primary,
+    fontFamily: theme.typography.fontFamily.regular,
     fontSize: theme.typography.fontSize['2xl'],
     fontWeight: theme.typography.fontWeight.bold,
     color: theme.colors.primary.main,
+    marginBottom: theme.spacing.sm,
+  },
+  subtitle: {
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.md,
+    color: theme.colors.neutral.grey,
+    marginBottom: theme.spacing.xl,
+  },
+  headerActions: {
+    marginBottom: theme.spacing.xl,
   },
   createButton: {
-    minWidth: 120,
+    backgroundColor: theme.colors.primary.main,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.lg,
+    borderRadius: theme.borderRadius.md,
+    alignSelf: 'flex-start',
   },
-  jobCard: {
+  createButtonText: {
+    color: theme.colors.neutral.white,
+    fontSize: theme.typography.fontSize.md,
+    fontWeight: theme.typography.fontWeight.medium,
+  },
+  card: {
     backgroundColor: theme.colors.neutral.white,
     borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.lg,
-    marginBottom: theme.spacing.md,
+    marginBottom: theme.spacing.lg,
     ...Platform.select({
       ios: theme.shadows.md,
       android: {
@@ -224,18 +275,29 @@ const styles = StyleSheet.create({
       },
     }),
   },
+  jobsList: {
+    gap: theme.spacing.lg,
+  },
   jobHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: theme.spacing.sm,
   },
+  jobTitleContainer: {
+    flex: 1,
+    marginRight: theme.spacing.sm,
+  },
   jobTitle: {
     fontSize: theme.typography.fontSize.lg,
     fontWeight: theme.typography.fontWeight.bold,
     color: theme.colors.neutral.darkGrey,
-    flex: 1,
-    marginRight: theme.spacing.sm,
+    marginBottom: theme.spacing.xs,
+  },
+  companyName: {
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.primary.main,
+    fontWeight: theme.typography.fontWeight.medium,
   },
   badge: {
     paddingHorizontal: theme.spacing.sm,
@@ -266,25 +328,33 @@ const styles = StyleSheet.create({
     fontWeight: theme.typography.fontWeight.medium,
     color: theme.colors.primary.main,
   },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
+  centerContainer: {
     alignItems: 'center',
-    paddingVertical: theme.spacing.xl,
+    justifyContent: 'center',
+    padding: theme.spacing.xl,
   },
   errorText: {
-    fontSize: theme.typography.fontSize.sm,
+    fontSize: theme.typography.fontSize.md,
     color: theme.colors.accent.error,
-    marginTop: theme.spacing.xs,
+    marginBottom: theme.spacing.lg,
+    textAlign: 'center',
+  },
+  button: {
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.lg,
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.colors.primary.main,
+  },
+  buttonText: {
+    color: theme.colors.neutral.white,
+    fontSize: theme.typography.fontSize.md,
+    fontWeight: theme.typography.fontWeight.medium,
   },
   retryButton: {
-    minWidth: 100,
+    backgroundColor: theme.colors.accent.error,
   },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: theme.spacing.xl * 2,
+  createFirstButton: {
+    marginTop: theme.spacing.lg,
   },
   emptyText: {
     fontSize: theme.typography.fontSize.lg,
@@ -296,7 +366,7 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.fontSize.sm,
     color: theme.colors.neutral.grey,
     textAlign: 'center',
-    paddingHorizontal: theme.spacing.xl,
+    marginBottom: theme.spacing.lg,
   },
 });
 

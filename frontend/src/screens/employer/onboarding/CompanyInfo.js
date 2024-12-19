@@ -29,7 +29,7 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Platform, TextInput } from 'react-native';
 import Container from '../../../components/common/Container';
 import Button from '../../../components/common/Button';
 import Input from '../../../components/common/Input';
@@ -38,6 +38,7 @@ import { theme } from '../../../theme/theme';
 import { useEmployerOnboarding } from '../../../context/EmployerOnboardingContext';
 import ProgressBar from '../../../components/common/ProgressBar';
 import * as ImagePicker from 'expo-image-picker';
+import { industries } from '../../../data/experience/industries.json';
 
 /**
  * @constant {Array<Object>} companySizes
@@ -84,7 +85,15 @@ const CompanyInfo = ({ navigation }) => {
   const [errors, setErrors] = useState({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSpecializationsOpen, setIsSpecializationsOpen] = useState(false);
+  const [isIndustryDropdownOpen, setIsIndustryDropdownOpen] = useState(false);
   const isDirectEmployer = formData.employerType.type === 'direct';
+  const MAX_DESCRIPTION_LENGTH = 1000;
+
+  // Convert industries array to dropdown format
+  const industryOptions = industries.map(industry => ({
+    label: industry,
+    value: industry
+  }));
 
   /**
    * @function handleImagePick
@@ -173,7 +182,12 @@ const CompanyInfo = ({ navigation }) => {
   return (
     <Container>
       <ProgressBar progress={getProgress()} style={styles.progress} />
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.container} 
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        nestedScrollEnabled={true}
+      >
         <Text style={styles.title}>
           {isDirectEmployer ? 'Company Information' : 'Agency Information'}
         </Text>
@@ -192,19 +206,47 @@ const CompanyInfo = ({ navigation }) => {
             placeholder={isDirectEmployer ? 'Enter company name' : 'Enter agency name'}
           />
 
-          <Input
-            label="Description"
-            value={formData.companyInfo.description}
-            onChangeText={(value) => updateFormData('companyInfo', 'description', value)}
-            error={errors.description}
-            placeholder={isDirectEmployer 
-              ? 'Brief description of your company' 
-              : 'Brief description of your agency'}
-            multiline
-            numberOfLines={4}
-          />
+          <View style={styles.textAreaContainer}>
+            <Text style={styles.label}>
+              Description
+              {errors.description && <Text style={styles.required}> *</Text>}
+            </Text>
+            <View style={[
+              styles.textAreaWrapper,
+              errors.description && styles.inputError
+            ]}>
+              <TextInput
+                value={formData.companyInfo.description}
+                onChangeText={(value) => {
+                  if (value.length <= MAX_DESCRIPTION_LENGTH) {
+                    updateFormData('companyInfo', 'description', value);
+                  }
+                }}
+                placeholder={isDirectEmployer 
+                  ? 'Brief description of your company, culture, and what makes you unique...' 
+                  : 'Brief description of your agency, services, and what sets you apart...'}
+                placeholderTextColor={theme.colors.neutral.gray}
+                multiline
+                numberOfLines={6}
+                textAlignVertical="top"
+                style={styles.textArea}
+              />
+            </View>
+            <View style={styles.characterCount}>
+              <Text style={[
+                styles.characterCountText,
+                formData.companyInfo.description?.length === MAX_DESCRIPTION_LENGTH && 
+                styles.characterCountWarning
+              ]}>
+                {`${formData.companyInfo.description?.length || 0}/${MAX_DESCRIPTION_LENGTH}`}
+              </Text>
+            </View>
+            {errors.description && (
+              <Text style={styles.errorText}>{errors.description}</Text>
+            )}
+          </View>
 
-          <View style={styles.dropdownContainer}>
+          <View style={[styles.dropdownContainer, { zIndex: 3000 }]}>
             <Text style={styles.dropdownLabel}>
               {isDirectEmployer ? 'Company Size' : 'Agency Size'}
             </Text>
@@ -218,8 +260,25 @@ const CompanyInfo = ({ navigation }) => {
                 updateFormData('companyInfo', 'size', value);
               }}
               style={styles.dropdown}
-              dropDownContainerStyle={styles.dropdownList}
+              dropDownContainerStyle={[styles.dropdownList, { 
+                position: 'relative',
+                top: 0,
+                marginTop: -1
+              }]}
               placeholder="Select size"
+              listMode="SCROLLVIEW"
+              scrollViewProps={{
+                nestedScrollEnabled: true,
+                contentContainerStyle: {
+                  paddingBottom: 0
+                }
+              }}
+              flatListProps={{
+                contentContainerStyle: {
+                  paddingBottom: 0
+                }
+              }}
+              zIndex={3000}
             />
             {errors.size && <Text style={styles.errorText}>{errors.size}</Text>}
           </View>
@@ -235,16 +294,45 @@ const CompanyInfo = ({ navigation }) => {
 
           {isDirectEmployer ? (
             <>
-              <Input
-                label="Industry"
-                value={formData.companyInfo.primaryIndustry}
-                onChangeText={(value) => updateFormData('companyInfo', 'primaryIndustry', value)}
-                error={errors.primaryIndustry}
-                placeholder="e.g., Technology, Healthcare, Finance"
-              />
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Industry</Text>
+                <DropDownPicker
+                  open={isIndustryDropdownOpen}
+                  value={formData.companyInfo.primaryIndustry}
+                  items={industryOptions}
+                  setOpen={setIsIndustryDropdownOpen}
+                  setValue={(callback) => {
+                    const value = callback(formData.companyInfo.primaryIndustry);
+                    updateFormData('companyInfo', 'primaryIndustry', value);
+                  }}
+                  style={styles.dropdown}
+                  dropDownContainerStyle={[styles.dropdownList, { 
+                    position: 'relative',
+                    top: 0,
+                    marginTop: -1
+                  }]}
+                  placeholder="Select industry"
+                  listMode="SCROLLVIEW"
+                  scrollViewProps={{
+                    nestedScrollEnabled: true,
+                    contentContainerStyle: {
+                      paddingBottom: 0
+                    }
+                  }}
+                  flatListProps={{
+                    contentContainerStyle: {
+                      paddingBottom: 0
+                    }
+                  }}
+                  zIndex={2000}
+                />
+                {errors.primaryIndustry && (
+                  <Text style={styles.errorText}>{errors.primaryIndustry}</Text>
+                )}
+              </View>
               
               <Input
-                label="Company Email Domain (Optional)"
+                label="Company Email Domain (Optional). We need this to verify your account."
                 value={formData.companyInfo.emailDomain}
                 onChangeText={(value) => updateFormData('companyInfo', 'emailDomain', value)}
                 placeholder="e.g., company.com"
@@ -253,7 +341,7 @@ const CompanyInfo = ({ navigation }) => {
             </>
           ) : (
             <>
-              <View style={styles.dropdownContainer}>
+              <View style={[styles.dropdownContainer, { zIndex: 2000 }]}>
                 <Text style={styles.dropdownLabel}>
                   Specializations
                 </Text>
@@ -267,9 +355,11 @@ const CompanyInfo = ({ navigation }) => {
                     updateFormData('companyInfo', 'specializations', value);
                   }}
                   style={styles.dropdown}
-                  dropDownContainerStyle={styles.dropdownList}
+                  dropDownContainerStyle={[styles.dropdownList, { position: 'relative' }]}
                   placeholder="Select specializations"
                   multiple={true}
+                  zIndex={2000}
+                  listMode="SCROLLVIEW"
                 />
                 {errors.specializations && <Text style={styles.errorText}>{errors.specializations}</Text>}
               </View>
@@ -285,11 +375,19 @@ const CompanyInfo = ({ navigation }) => {
           )}
         </View>
 
-        <Button 
-          title={isDirectEmployer ? "Next" : "Finish"}
-          onPress={handleNext}
-          style={styles.button}
-        />
+        <View style={styles.buttonContainer}>
+          <Button
+            variant="outline"
+            title="Back"
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          />
+          <Button
+            title="Next"
+            onPress={handleNext}
+            style={styles.nextButton}
+          />
+        </View>
       </ScrollView>
     </Container>
   );
@@ -319,30 +417,94 @@ const styles = StyleSheet.create({
   form: {
     gap: theme.spacing.lg,
     marginBottom: theme.spacing.xl,
+    position: 'relative',
+    zIndex: 1000,
   },
-  button: {
-    marginVertical: theme.spacing.xl,
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: theme.spacing.xl,
+    gap: theme.spacing.md,
+  },
+  backButton: {
+    flex: 1,
+  },
+  nextButton: {
+    flex: 1,
   },
   dropdownContainer: {
     marginBottom: theme.spacing.md,
   },
   dropdownLabel: {
     fontFamily: theme.typography.fontFamily.regular,
-    fontSize: theme.typography.fontSize.md,
-    color: theme.colors.neutral.darkGrey,
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.neutral.grey,
     marginBottom: theme.spacing.xs,
   },
   dropdown: {
     borderColor: theme.colors.neutral.lightGrey,
     borderRadius: theme.borderRadius.md,
+    minHeight: 45,
+    backgroundColor: theme.colors.neutral.white,
   },
   dropdownList: {
     borderColor: theme.colors.neutral.lightGrey,
     borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.colors.neutral.white,
   },
   errorText: {
     color: theme.colors.accent.error,
     fontSize: theme.typography.fontSize.sm,
+    marginTop: theme.spacing.xs,
+  },
+  textAreaContainer: {
+    marginBottom: theme.spacing.md,
+  },
+  label: {
+    fontSize: theme.typography.fontSize.sm,
+    fontFamily: theme.typography.fontFamily.medium,
+    color: theme.colors.neutral.grey,
+    marginBottom: theme.spacing.xs,
+  },
+  required: {
+    color: theme.colors.accent.error,
+  },
+  textAreaWrapper: {
+    borderWidth: 1,
+    borderColor: theme.colors.neutral.lightGrey,
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.colors.neutral.white,
+    ...Platform.select({
+      ios: theme.shadows.sm,
+      android: {
+        elevation: theme.shadows.sm.elevation,
+      },
+    }),
+  },
+  textArea: {
+    fontSize: theme.typography.fontSize.md,
+    color: theme.colors.neutral.darkGrey,
+    padding: theme.spacing.lg,
+    minHeight: theme.spacing['6xl'],
+  },
+  inputError: {
+    borderColor: theme.colors.accent.error,
+  },
+  characterCount: {
+    alignItems: 'flex-end',
+    marginTop: theme.spacing.xs,
+  },
+  characterCountText: {
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.neutral.grey,
+  },
+  characterCountWarning: {
+    color: theme.colors.accent.warning,
+  },
+  errorText: {
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.accent.error,
     marginTop: theme.spacing.xs,
   },
 });
