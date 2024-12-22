@@ -36,7 +36,7 @@ import { useNavigation } from '@react-navigation/native';
 import Container from '../../components/common/Container';
 import Button from '../../components/common/Button';
 import { theme } from '../../theme/theme';
-import { getEmployerJobs } from '../../services/firebase/jobs';
+import { jobsApi } from '../../services/api/jobs';
 import { useUser } from '../../context/UserContext';
 
 /**
@@ -142,6 +142,14 @@ const JobPosts = () => {
     loadJobs();
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadJobs();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   /**
    * @function loadJobs
    * @description Fetches all job postings for the current employer
@@ -152,12 +160,10 @@ const JobPosts = () => {
   const loadJobs = async () => {
     try {
       setLoading(true);
-      setError(null);
-      const jobsData = await getEmployerJobs(user.uid);
-      setJobs(jobsData);
-    } catch (err) {
-      console.error('Error loading jobs:', err);
-      setError('Failed to load jobs. Please try again.');
+      const data = await jobsApi.getEmployerJobs(user.uid);
+      setJobs(data);
+    } catch (error) {
+      setError(error.message);
     } finally {
       setLoading(false);
     }

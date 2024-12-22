@@ -17,7 +17,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateUser } = require('../middleware/auth');
+const  authenticateUser  = require('../middleware/auth');
 const JobModel = require('../models/job.model');
 const { APIError } = require('../middleware/error');
 
@@ -204,6 +204,49 @@ router.delete('/:id', authenticateUser, async (req, res, next) => {
       message: 'Job post has been closed'
     });
   } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * Get all jobs for a specific employer
+ * GET /api/jobs/employer/:employerId
+ * @route GET /api/jobs/employer/:employerId
+ * @param {string} employerId.path.required - ID of the employer
+ * @param {string} [status] - Optional status filter (active, closed, etc.)
+ * @returns {Object} { status: 'success', data: Array of job objects }
+ * @throws {APIError} 403 - If user tries to access another employer's jobs
+ * @throws {APIError} 500 - If there's a server error
+ */
+router.get('/employer/:employerId', authenticateUser, async (req, res, next) => {
+  console.log('[JobsRoute] Request received:', { 
+    employerId: req.params.employerId, 
+    userId: req.user.uid,
+    status: req.query.status 
+  });
+  try {
+    // Check if user is requesting their own jobs
+    if (req.user.uid !== req.params.employerId) {
+      console.warn('[JobsRoute] Auth failed - mismatched IDs:', {
+        requestedId: req.params.employerId,
+        userId: req.user.uid
+      });
+      throw new APIError(403, 'You can only view your own job posts');
+    }
+
+    const { status } = req.query;
+    const jobs = await JobModel.getJobsByEmployer(req.params.employerId, status);
+    console.log('[JobsRoute] Jobs fetched successfully:', { count: jobs.length });
+    
+    res.json({
+      status: 'success',
+      data: jobs
+    });
+  } catch (error) {
+    console.error('[JobsRoute] Error occurred:', {
+      message: error.message,
+      stack: error.stack
+    });
     next(error);
   }
 });

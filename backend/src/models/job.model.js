@@ -44,13 +44,31 @@ class JobModel extends BaseModel {
     return this.create(job);
   }
 
-  // Get jobs by employer
-  async getJobsByEmployer(employerId, status = 'active') {
-    return this.query([
-      { field: 'employerId', operator: '==', value: employerId },
-      { field: 'status', operator: '==', value: status }
-    ]);
-  }
+    // Get jobs by employer
+    async getJobsByEmployer(employerId, status = null) {
+      console.log('[JobModel] Starting query:', { employerId, status });
+      try {
+        const conditions = [{ field: 'employerId', operator: '==', value: employerId }];
+        
+        if (status) {
+          console.log('[JobModel] Applying status filter:', status);
+          conditions.push({ field: 'status', operator: '==', value: status });
+        }
+  
+        const jobs = await this.query(conditions);
+        console.log('[JobModel] Query results:', { documentCount: jobs.length });
+  
+        return jobs;
+      } catch (error) {
+        console.error('[JobModel] Query failed:', {
+          error: error.message,
+          employerId,
+          status
+        });
+        throw error;
+      }
+    }
+  
 
   // Get nearby jobs
   async getNearbyJobs(latitude, longitude, radius, filters = {}, limit = 10) {

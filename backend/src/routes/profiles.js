@@ -12,7 +12,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateUser } = require('../middleware/auth');
+const authenticateUser = require('../middleware/auth');
 const { handleUpload } = require('../middleware/upload');
 const UserModel = require('../models/user.model');
 const { APIError } = require('../middleware/error');

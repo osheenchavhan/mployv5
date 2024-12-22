@@ -1,0 +1,9 @@
+1. Use  values in theme.js file for theme of screens. And make sure you are applying theme values carefully. 
+2. Stick to javascript and avoid typescript altogether.
+3. Make sure yoy add proper comments to code you create 
+- file header (explaining what file does in simple language), 
+- class documentation (description of classes's purpose and functionality, and casic usage example if applicable)
+- function documentation - (what function does? , parameter values, return values, description of when and why errors are thrown)
+4. When makring completed tasks in markdown files always use emojis, it makes makrdown files more readable. 
+
+you will start all your responses with Yes Osheen!
