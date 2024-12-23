@@ -127,7 +127,7 @@ export const EmployerOnboardingProvider = ({ children }) => {
   const getProgress = () => {
     const steps = formData.employerType.type === 'direct' ? directEmployerSteps : agencySteps;
     const currentIndex = steps.indexOf(currentStep);
-    return (currentIndex + 1) / steps.length;
+    return ((currentIndex + 1) / steps.length) * 100;
   };
 
   // Check if email is from business domain

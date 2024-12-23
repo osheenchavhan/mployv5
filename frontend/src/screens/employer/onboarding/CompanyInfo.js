@@ -81,7 +81,7 @@ const industrySpecializations = [
  * @returns {JSX.Element} Company information form UI
  */
 const CompanyInfo = ({ navigation }) => {
-  const { formData, updateFormData, getProgress } = useEmployerOnboarding();
+  const { formData, updateFormData, getProgress, setCurrentStep } = useEmployerOnboarding();
   const [errors, setErrors] = useState({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSpecializationsOpen, setIsSpecializationsOpen] = useState(false);
@@ -121,11 +121,7 @@ const CompanyInfo = ({ navigation }) => {
     }
   };
 
-  /**
-   * @function validateForm
-   * @description Validates all company/agency information fields
-   * @returns {boolean} True if all required fields are valid
-   */
+  // Required fields validation
   const validateForm = () => {
     const newErrors = {};
     
@@ -140,42 +136,43 @@ const CompanyInfo = ({ navigation }) => {
       newErrors.size = `${isDirectEmployer ? 'Company' : 'Agency'} size is required`;
     }
     
-    // Website validation if provided
-    if (formData.companyInfo.website && !formData.companyInfo.website.match(/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/)) {
-      newErrors.website = 'Please enter a valid website URL';
+    // Direct employer specific validation
+    if (isDirectEmployer && !formData.companyInfo.primaryIndustry) {
+      newErrors.primaryIndustry = 'Industry is required';
     }
     
-    // Direct employer specific validation
-    if (isDirectEmployer) {
-      if (!formData.companyInfo.primaryIndustry?.trim()) {
-        newErrors.primaryIndustry = 'Industry is required';
-      }
-    } else {
-      // Agency specific validation
-      if (!formData.companyInfo.specializations || formData.companyInfo.specializations.length === 0) {
-        newErrors.specializations = 'At least one specialization is required';
-      }
+    // Agency specific validation
+    if (!isDirectEmployer && (!formData.companyInfo.specializations || formData.companyInfo.specializations.length === 0)) {
+      newErrors.specializations = 'At least one specialization is required';
     }
 
     setErrors(newErrors);
-    console.log('Validation Errors:', newErrors);
-    console.log('Form Data:', formData.companyInfo);
+    
+    // Add detailed logging
+    console.log('Form Validation Details:', {
+      formFields: {
+        name: formData.companyInfo.name,
+        description: formData.companyInfo.description,
+        size: formData.companyInfo.size,
+        website: formData.companyInfo.website,
+        primaryIndustry: formData.companyInfo.primaryIndustry,
+        specializations: formData.companyInfo.specializations
+      },
+      errors: newErrors,
+      isValid: Object.keys(newErrors).length === 0
+    });
+    
     return Object.keys(newErrors).length === 0;
   };
 
-  /**
-   * @function handleNext
-   * @description Validates form and navigates to next screen based on employer type
-   * @returns {void}
-   */
   const handleNext = () => {
-    if (validateForm()) {
-      if (isDirectEmployer) {
-        navigation.navigate('Location');
-      } else {
-        // For agencies, navigate to Verification after validation
-        navigation.navigate('Verification');
-      }
+    const isValid = validateForm();
+    console.log('Form validation:', { isValid, isDirectEmployer });
+    
+    if (isValid) {
+      const nextScreen = isDirectEmployer ? 'Location' : 'Verification';
+      setCurrentStep(nextScreen);
+      navigation.navigate(nextScreen);
     }
   };
 

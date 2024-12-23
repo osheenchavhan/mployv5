@@ -31,10 +31,12 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Container from '../../components/common/Container';
 import { theme } from '../../theme/theme';
+import { logoutUser } from '../../services/firebase/auth';
+import { useUser } from '../../context/UserContext';
 
 /**
  * @function Settings
@@ -44,17 +46,29 @@ import { theme } from '../../theme/theme';
  * @returns {JSX.Element} Settings screen UI
  */
 const Settings = ({ navigation }) => {
+  const { setUser } = useUser();
+
   /**
    * @function handleLogout
-   * @description Handles user logout by resetting navigation stack to Login screen
-   * @returns {void}
+   * @description Handles user logout and navigation reset
+   * @returns {Promise<void>}
    */
-  const handleLogout = () => {
-    // Reset navigation stack to Login screen
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Login' }],
-    });
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      setUser(null);
+      // Reset navigation stack to Login screen
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    } catch (error) {
+      Alert.alert(
+        'Logout Failed',
+        'There was a problem logging out. Please try again.',
+        [{ text: 'OK' }]
+      );
+    }
   };
 
   return (
